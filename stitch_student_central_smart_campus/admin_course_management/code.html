@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Course Management - Lumina Academy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "outline-variant": "#c7c4d7",
+                "primary": "#4648d4",
+                "on-primary": "#ffffff",
+                "secondary-fixed": "#dae2fd",
+                "on-primary-fixed-variant": "#2f2ebe",
+                "tertiary": "#006577",
+                "inverse-primary": "#c0c1ff",
+                "on-surface": "#191c1e",
+                "background": "#f7f9fb",
+                "surface-container-lowest": "#ffffff",
+                "inverse-surface": "#2d3133",
+                "surface-container": "#eceef0",
+                "surface-bright": "#f7f9fb",
+                "surface-dim": "#d8dadc",
+                "tertiary-container": "#008096",
+                "surface-variant": "#e0e3e5",
+                "tertiary-fixed": "#acedff",
+                "surface-container-high": "#e6e8ea",
+                "secondary-fixed-dim": "#bec6e0",
+                "on-tertiary-container": "#f9fdff",
+                "on-error": "#ffffff",
+                "error": "#ba1a1a",
+                "on-secondary-fixed": "#131b2e",
+                "on-error-container": "#93000a",
+                "tertiary-fixed-dim": "#4cd7f6",
+                "primary-container": "#6063ee",
+                "surface": "#f7f9fb",
+                "on-secondary-container": "#5c647a",
+                "inverse-on-surface": "#eff1f3",
+                "on-background": "#191c1e",
+                "secondary-container": "#dae2fd",
+                "surface-container-highest": "#e0e3e5",
+                "on-tertiary-fixed-variant": "#004e5c",
+                "on-surface-variant": "#464554",
+                "on-secondary-fixed-variant": "#3f465c",
+                "on-tertiary": "#ffffff",
+                "primary-fixed": "#e1e0ff",
+                "outline": "#767586",
+                "on-primary-fixed": "#07006c",
+                "on-secondary": "#ffffff",
+                "error-container": "#ffdad6",
+                "surface-container-low": "#f2f4f6",
+                "primary-fixed-dim": "#c0c1ff",
+                "surface-tint": "#494bd6",
+                "secondary": "#565e74",
+                "on-tertiary-fixed": "#001f26",
+                "on-primary-container": "#fffbff"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "gutter": "24px",
+                "stack-sm": "8px",
+                "margin-mobile": "16px",
+                "stack-md": "16px",
+                "container-max": "1280px",
+                "margin-desktop": "40px",
+                "unit": "4px",
+                "stack-lg": "32px"
+        },
+        "fontFamily": {
+                "body-md": [
+                        "Inter"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "headline-md": [
+                        "Geist"
+                ],
+                "label-md": [
+                        "JetBrains Mono"
+                ],
+                "label-sm": [
+                        "JetBrains Mono"
+                ],
+                "body-sm": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "Geist"
+                ],
+                "display-lg": [
+                        "Geist"
+                ],
+                "headline-lg-mobile": [
+                        "Geist"
+                ]
+        },
+        "fontSize": {
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.02em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "display-lg": [
+                        "48px",
+                        {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.04em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+  body {
+    background-color: #f7f9fb;
+    color: #191c1e;
+  }
+  .glass-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(70, 72, 212, 0.1);
+  }
+  .table-row-hover:hover {
+    background: rgba(70, 72, 212, 0.05);
+  }
+</style>
+</head>
+<body class="font-body-md text-body-md bg-background text-on-surface antialiased overflow-x-hidden min-h-screen flex flex-col md:flex-row">
+<!-- SideNavBar (Hidden on Mobile, Visible on md+) -->
+<aside class="hidden md:flex bg-surface-container-low/40 dark:bg-surface-container-lowest/10 backdrop-blur-xl font-label-md text-label-md text-primary dark:text-tertiary-fixed-dim fixed left-0 top-0 h-full w-64 z-50 border-r border-primary/5 dark:border-white/5 shadow-2xl flex-col p-4 gap-2">
+<div class="flex items-center gap-4 mb-stack-lg px-2 pt-2">
+<img alt="University Crest" class="w-10 h-10 rounded-full object-cover shadow-sm bg-surface-container" data-alt="A small, modern crest logo for a fictional university 'Lumina Academy', clean lines, single color vector style on light background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9tHpsVhZ13--5LvYVOycfSvAqu465smil-e5eXAmudykI6HwZdLFUlJ5QcTyKfd9pqzCJmEpvZ8TQlzPozD8RPp6hB2WNpO-0UB7Tjl5v9_puFX6rR3DB_IXos7alQxcyCf9nSwuEQIvi9SBWnSSKMojkonUWZpakrX9X1j9Xd7CNIzAykKgckDgRmfzRYDbU9aGfA0YDkVbwVXgIYdwdIvT6Dl9lzeCJgUyBEBArzjlGOqZITVcF"/>
+<div>
+<h1 class="font-headline-md text-headline-md text-primary font-semibold">Portal Admin</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-80 mt-1">Fall Semester 2024</p>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary hover:opacity-90 transition-opacity rounded-lg py-3 px-4 font-semibold flex items-center justify-center gap-2 shadow-sm mb-stack-md">
+<span class="material-symbols-outlined text-[18px]">add</span>
+      New Application
+    </button>
+<nav class="flex-1 flex flex-col gap-1 overflow-y-auto">
+<a class="flex items-center gap-3 text-on-secondary-container dark:text-on-surface-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-white/5 transition-all hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+        Overview
+      </a>
+<a class="flex items-center gap-3 text-on-secondary-container dark:text-on-surface-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-white/5 transition-all hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+        Students
+      </a>
+<a class="flex items-center gap-3 text-on-secondary-container dark:text-on-surface-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-white/5 transition-all hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+        Applications
+      </a>
+<a class="flex items-center gap-3 text-on-secondary-container dark:text-on-surface-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-white/5 transition-all hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+        Documents
+      </a>
+<a class="flex items-center gap-3 bg-primary/10 dark:bg-primary-container/20 text-primary dark:text-primary-fixed-dim rounded-lg px-4 py-3 font-semibold hover:bg-surface-container-high dark:hover:bg-white/5 transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
+        Courses
+      </a>
+<a class="flex items-center gap-3 text-on-secondary-container dark:text-on-surface-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-white/5 transition-all hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined">how_to_reg</span>
+        Registrations
+      </a>
+<a class="flex items-center gap-3 text-on-secondary-container dark:text-on-surface-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-white/5 transition-all hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+        Schedules
+      </a>
+</nav>
+<div class="mt-auto pt-4 border-t border-primary/5">
+<a class="flex items-center gap-3 text-on-secondary-container dark:text-on-surface-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-white/5 transition-all hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+        Support
+      </a>
+<a class="flex items-center gap-3 text-on-secondary-container dark:text-on-surface-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-white/5 transition-all hover:translate-x-1 rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+        Sign Out
+      </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 w-full md:pl-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface/60 dark:bg-surface-dim/60 backdrop-blur-lg text-primary dark:text-primary-fixed font-body-md text-body-md fixed top-0 w-full z-40 border-b border-primary/10 dark:border-primary-fixed/10 shadow-sm flex justify-between items-center px-gutter h-16 md:w-[calc(100%-16rem)]">
+<!-- Mobile Menu Button (Visible only on mobile) -->
+<button class="md:hidden p-2 -ml-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<!-- Brand Logo (Mobile only, hidden on desktop since SideNav has it) -->
+<div class="md:hidden font-headline-md text-headline-md font-semibold text-primary dark:text-primary-fixed truncate flex-1 ml-2">
+        Lumina Academy
+      </div>
+<!-- Search Bar (on_left config, but centered/right aligned in this layout) -->
+<div class="hidden md:flex flex-1 items-center max-w-md relative mr-4">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant text-[20px] pointer-events-none">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 transition-shadow outline-none placeholder:text-on-surface-variant/60" placeholder="Search courses, students..." type="text"/>
+</div>
+<!-- Right Actions -->
+<div class="flex items-center gap-2">
+<button class="hidden sm:block px-4 py-1.5 text-sm font-semibold text-primary hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full transition-colors active:scale-95 transition-transform duration-150">
+          Admin Panel
+        </button>
+<button class="p-2 text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors rounded-full active:scale-95 transition-transform duration-150 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors rounded-full active:scale-95 transition-transform duration-150 mr-2">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="flex items-center justify-center w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-primary/10 hover:ring-2 hover:ring-primary/30 transition-all active:scale-95">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A small, professional headshot of an administrator, modern corporate portrait, plain background, soft lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtL9EulyfjjldUc0CNeRzp9Pniy6K7inOcWwimEuOwPYQKS0N44zb2LGyL8MLEsyl9ExuphtlQq_JaHnI94wVpBm6hGodUBux_Ba6wDfU-fbrq1HytG9nX7oimcQSuivxUeZQAYvIiYZpAKoj0NAbpTj169uKwXVsagXYczSYj1Qwm8vevaqnfZxjT6LFuCfcHticXr1g8txfDSjhn2w7InHdJOqlAuMsMS2G0f5ev-i4v2yBAg7Gd"/>
+</button>
+</div>
+</header>
+<!-- Page Canvas -->
+<div class="pt-24 pb-12 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full flex-1">
+<!-- Page Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md mb-stack-lg">
+<div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Manage Academic Courses</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Update course details, monitor enrollment limits, and configure prerequisites.</p>
+</div>
+<button class="bg-primary text-on-primary font-semibold py-2.5 px-5 rounded-lg shadow-sm hover:opacity-90 hover:shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 self-start md:self-auto shrink-0">
+<span class="material-symbols-outlined text-[20px]">add</span>
+          Create Course
+        </button>
+</div>
+<!-- Controls & Filters Bar -->
+<div class="glass-card rounded-xl p-4 mb-stack-md flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between shadow-sm">
+<!-- Search -->
+<div class="relative w-full lg:w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface/50 border border-outline-variant/50 rounded-lg py-2 pl-10 pr-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary transition-colors outline-none" placeholder="Search by course name or code..." type="text"/>
+</div>
+<!-- Filters -->
+<div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+<button class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low border border-outline-variant/30 rounded-lg text-sm font-label-md hover:bg-surface-container transition-colors">
+            Department
+            <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<button class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low border border-outline-variant/30 rounded-lg text-sm font-label-md hover:bg-surface-container transition-colors">
+            Semester
+            <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<button class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low border border-outline-variant/30 rounded-lg text-sm font-label-md hover:bg-surface-container transition-colors">
+            Status
+            <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<div class="w-px h-6 bg-outline-variant/30 mx-2 hidden sm:block"></div>
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1 text-sm font-medium">
+<span class="material-symbols-outlined text-[18px]">filter_list_off</span>
+            Clear
+          </button>
+</div>
+</div>
+<!-- Data Table Card -->
+<div class="glass-card rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left border-collapse min-w-[800px]">
+<thead>
+<tr class="border-b border-outline-variant/20 bg-surface-container-lowest/50 text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-4 px-6 font-semibold">Course</th>
+<th class="py-4 px-6 font-semibold">Department</th>
+<th class="py-4 px-6 font-semibold">Credits</th>
+<th class="py-4 px-6 font-semibold">Capacity</th>
+<th class="py-4 px-6 font-semibold">Status</th>
+<th class="py-4 px-6 font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm divide-y divide-outline-variant/10">
+<!-- Row 1 -->
+<tr class="table-row-hover transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-label-md text-xs">
+                      CS
+                    </div>
+<div>
+<div class="font-semibold text-on-surface">Machine Learning</div>
+<div class="font-label-sm text-on-surface-variant mt-0.5">CS501</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface-variant">Computer Science</td>
+<td class="py-4 px-6 text-on-surface-variant font-label-md">4</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-24 h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-error" style="width: 95%;"></div>
+</div>
+<span class="font-label-md text-xs text-on-surface-variant w-10 text-right">38/40</span>
+</div>
+</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error/10 text-error font-label-sm text-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                    Full
+                  </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-md transition-colors tooltip" title="Prerequisites">
+<span class="material-symbols-outlined text-[20px]">account_tree</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-md transition-colors tooltip" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-md transition-colors tooltip" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="table-row-hover transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-tertiary/10 flex items-center justify-center text-tertiary font-label-md text-xs">
+                      CS
+                    </div>
+<div>
+<div class="font-semibold text-on-surface">Data Structures</div>
+<div class="font-label-sm text-on-surface-variant mt-0.5">CS401</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface-variant">Computer Science</td>
+<td class="py-4 px-6 text-on-surface-variant font-label-md">4</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-24 h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container" style="width: 80%;"></div>
+</div>
+<span class="font-label-md text-xs text-on-surface-variant w-10 text-right">32/40</span>
+</div>
+</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-container/10 text-tertiary font-label-sm text-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+                    Open
+                  </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-md transition-colors tooltip" title="Prerequisites">
+<span class="material-symbols-outlined text-[20px]">account_tree</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-md transition-colors tooltip" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-md transition-colors tooltip" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="table-row-hover transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary font-label-md text-xs">
+                      MAT
+                    </div>
+<div>
+<div class="font-semibold text-on-surface">Linear Algebra</div>
+<div class="font-label-sm text-on-surface-variant mt-0.5">MATH201</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface-variant">Mathematics</td>
+<td class="py-4 px-6 text-on-surface-variant font-label-md">3</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-24 h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container" style="width: 30%;"></div>
+</div>
+<span class="font-label-md text-xs text-on-surface-variant w-10 text-right">15/50</span>
+</div>
+</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-container/10 text-tertiary font-label-sm text-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+                    Open
+                  </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-md transition-colors tooltip" title="Prerequisites">
+<span class="material-symbols-outlined text-[20px]">account_tree</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-md transition-colors tooltip" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-md transition-colors tooltip" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="table-row-hover transition-colors group border-b-0">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-outline/10 flex items-center justify-center text-outline font-label-md text-xs">
+                      ENG
+                    </div>
+<div>
+<div class="font-semibold text-on-surface">Modern World Literature</div>
+<div class="font-label-sm text-on-surface-variant mt-0.5">ENG210</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface-variant">Humanities</td>
+<td class="py-4 px-6 text-on-surface-variant font-label-md">3</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-24 h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-error" style="width: 100%;"></div>
+</div>
+<span class="font-label-md text-xs text-on-surface-variant w-10 text-right">45/45</span>
+</div>
+</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error/10 text-error font-label-sm text-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                    Full
+                  </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-md transition-colors tooltip" title="Prerequisites">
+<span class="material-symbols-outlined text-[20px]">account_tree</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-md transition-colors tooltip" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-md transition-colors tooltip" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination Footer -->
+<div class="border-t border-outline-variant/20 bg-surface-container-lowest/30 px-6 py-3 flex items-center justify-between mt-auto">
+<span class="text-sm text-on-surface-variant font-medium">Showing 1 to 4 of 24 entries</span>
+<div class="flex items-center gap-1">
+<button class="p-1 text-on-surface-variant hover:bg-surface-container rounded transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-on-primary font-label-md text-sm">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface font-label-md text-sm transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface font-label-md text-sm transition-colors">3</button>
+<span class="px-1 text-on-surface-variant">...</span>
+<button class="p-1 text-on-surface-variant hover:bg-surface-container rounded transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

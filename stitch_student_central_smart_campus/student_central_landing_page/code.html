@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Central</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "secondary-fixed": "#dae2fd",
+                "on-surface-variant": "#464554",
+                "secondary-container": "#dae2fd",
+                "inverse-on-surface": "#eff1f3",
+                "secondary": "#565e74",
+                "tertiary-fixed": "#acedff",
+                "surface-container-high": "#e6e8ea",
+                "error": "#ba1a1a",
+                "surface-container-highest": "#e0e3e5",
+                "on-surface": "#191c1e",
+                "tertiary-container": "#008096",
+                "surface-tint": "#494bd6",
+                "surface-container-low": "#f2f4f6",
+                "surface": "#f7f9fb",
+                "on-primary-container": "#fffbff",
+                "surface-container-lowest": "#ffffff",
+                "tertiary-fixed-dim": "#4cd7f6",
+                "tertiary": "#006577",
+                "surface-bright": "#f7f9fb",
+                "inverse-surface": "#2d3133",
+                "primary-fixed": "#e1e0ff",
+                "on-tertiary": "#ffffff",
+                "on-secondary-fixed-variant": "#3f465c",
+                "on-secondary-fixed": "#131b2e",
+                "outline-variant": "#c7c4d7",
+                "on-tertiary-fixed-variant": "#004e5c",
+                "on-secondary": "#ffffff",
+                "secondary-fixed-dim": "#bec6e0",
+                "inverse-primary": "#c0c1ff",
+                "on-primary-fixed": "#07006c",
+                "on-secondary-container": "#5c647a",
+                "on-tertiary-fixed": "#001f26",
+                "on-error-container": "#93000a",
+                "primary-fixed-dim": "#c0c1ff",
+                "background": "#f7f9fb",
+                "surface-dim": "#d8dadc",
+                "on-error": "#ffffff",
+                "primary-container": "#6063ee",
+                "outline": "#767586",
+                "on-background": "#191c1e",
+                "surface-container": "#eceef0",
+                "on-tertiary-container": "#f9fdff",
+                "error-container": "#ffdad6",
+                "on-primary": "#ffffff",
+                "surface-variant": "#e0e3e5",
+                "on-primary-fixed-variant": "#2f2ebe",
+                "primary": "#4648d4"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "container-max": "1280px",
+                "margin-mobile": "16px",
+                "stack-sm": "8px",
+                "margin-desktop": "40px",
+                "stack-md": "16px",
+                "unit": "4px",
+                "stack-lg": "32px",
+                "gutter": "24px"
+        },
+        "fontFamily": {
+                "headline-md": [
+                        "Geist"
+                ],
+                "body-sm": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Geist"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "Geist"
+                ],
+                "display-lg": [
+                        "Geist"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "label-md": [
+                        "JetBrains Mono"
+                ],
+                "label-sm": [
+                        "JetBrains Mono"
+                ]
+        },
+        "fontSize": {
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "display-lg": [
+                        "48px",
+                        {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.04em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.02em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "500"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+  body {
+    background-color: #f7f9fb;
+    color: #191c1e;
+  }
+  .glass-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(70, 72, 212, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  }
+  .glass-card-hover:hover {
+    box-shadow: 0 10px 15px -3px rgba(70, 72, 212, 0.1), 0 4px 6px -2px rgba(70, 72, 212, 0.05);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+  .glow-text {
+    text-shadow: 0 0 20px rgba(70, 72, 212, 0.3);
+  }
+</style>
+</head>
+<body class="antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+<!-- Navigation Component from JSON -->
+<header class="bg-surface/60 dark:bg-inverse-surface/60 backdrop-blur-xl docked full-width top-0 sticky z-50 border-b border-primary/10 dark:border-primary-fixed/10 shadow-sm flex justify-between items-center w-full px-margin-desktop h-16">
+<div class="flex items-center gap-stack-sm">
+<img alt="Logo" class="w-8 h-8 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0pY7lDCmGXUXFEN7G0Fl1qHOMmClzu6YWvNhGNMT5_5uvb8HLm-UMsPmD9ApwRSQ3vRjKhbzHRizz4MM61BwxrNuo2oZEX9r4gYTI4fReNMs9YMW3zKbCX6RtxmLzsf9pQioUTJ6PZSsBmuTINmLzEyyxdgsaVjf3t1eyPsV-_LmDbe0jG0WbG1obTlV6soLCWcYS7lOzzsy60LWq6FAzQ6ycipKUgiq-RtMNXNQhOa1zDeWBQIAW"/>
+<span class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed">Student Central</span>
+</div>
+<!-- Desktop Nav Links (Hidden on mobile) -->
+<nav class="hidden md:flex gap-gutter">
+<a class="text-on-surface-variant dark:text-on-secondary-fixed-variant hover:bg-primary/5 dark:hover:bg-primary-fixed/5 transition-colors px-3 py-2 rounded-md text-label-md font-label-md" href="#">Overview</a>
+<a class="text-on-surface-variant dark:text-on-secondary-fixed-variant hover:bg-primary/5 dark:hover:bg-primary-fixed/5 transition-colors px-3 py-2 rounded-md text-label-md font-label-md" href="#">Admission</a>
+<a class="text-on-surface-variant dark:text-on-secondary-fixed-variant hover:bg-primary/5 dark:hover:bg-primary-fixed/5 transition-colors px-3 py-2 rounded-md text-label-md font-label-md" href="#">Courses</a>
+</nav>
+<div class="flex items-center gap-stack-md">
+<div class="hidden md:flex items-center gap-stack-sm text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:bg-primary/5 p-2 rounded-full transition-colors" data-icon="search">search</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-primary/5 p-2 rounded-full transition-colors" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-primary/5 p-2 rounded-full transition-colors" data-icon="help">help</span>
+</div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">
+        Log In
+      </button>
+</div>
+</header>
+<main class="flex-grow">
+<!-- Hero Section -->
+<section class="relative pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto overflow-hidden flex flex-col lg:flex-row items-center gap-stack-lg">
+<!-- Decorative Background Elements -->
+<div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+<div class="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-primary/5 blur-[100px]"></div>
+<div class="absolute bottom-[-20%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-tertiary-container/5 blur-[100px]"></div>
+</div>
+<div class="w-full lg:w-1/2 flex flex-col gap-stack-md relative z-10 text-center lg:text-left">
+<h1 class="text-display-lg font-display-lg text-on-surface glow-text">
+          Your campus.<br/>
+<span class="text-primary">One intelligent space.</span>
+</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-xl mx-auto lg:mx-0">
+          From admission to course registration, manage your entire academic journey from one centralized platform. Designed for modern students and forward-thinking faculties.
+        </p>
+<div class="flex flex-col sm:flex-row gap-stack-sm justify-center lg:justify-start mt-stack-md">
+<button class="bg-primary text-on-primary px-6 py-3 rounded-lg font-label-md text-label-md hover:shadow-[0_0_15px_rgba(70,72,212,0.4)] transition-all transform hover:-translate-y-0.5">
+            Get Started
+          </button>
+<button class="bg-transparent border border-primary/20 text-primary px-6 py-3 rounded-lg font-label-md text-label-md hover:bg-primary/5 transition-all">
+            Explore Courses
+          </button>
+</div>
+</div>
+<!-- Hero Visual - Floating Dashboard -->
+<div class="w-full lg:w-1/2 relative z-10 perspective-1000">
+<div class="glass-card rounded-xl p-stack-md relative transform rotate-y-[-10deg] rotate-x-[5deg] shadow-2xl">
+<!-- Mock Top Bar -->
+<div class="flex justify-between items-center border-b border-primary/10 pb-stack-sm mb-stack-md">
+<div class="flex gap-2">
+<div class="w-3 h-3 rounded-full bg-error/50"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary-container/50"></div>
+<div class="w-3 h-3 rounded-full bg-primary/50"></div>
+</div>
+<div class="bg-surface-container-high rounded-full px-4 py-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="search">search</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Search campus...</span>
+</div>
+</div>
+<!-- Mock Content Grid -->
+<div class="grid grid-cols-2 gap-stack-sm">
+<!-- Admission Status -->
+<div class="col-span-2 glass-card rounded-lg p-stack-sm flex items-center justify-between">
+<div class="flex items-center gap-stack-sm">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="how_to_reg">how_to_reg</span>
+</div>
+<div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Admission Status</p>
+<p class="text-body-md font-body-md font-semibold text-on-surface">Approved</p>
+</div>
+</div>
+<span class="bg-tertiary-container/10 text-tertiary px-2 py-1 rounded text-[10px] font-label-sm">Fall 2024</span>
+</div>
+<!-- Course Cards -->
+<div class="glass-card rounded-lg p-stack-sm">
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-2">CS 101</p>
+<p class="text-body-sm font-body-sm font-semibold mb-1">Intro to Programming</p>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary w-[75%] h-full rounded-full"></div>
+</div>
+</div>
+<div class="glass-card rounded-lg p-stack-sm">
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-2">MATH 201</p>
+<p class="text-body-sm font-body-sm font-semibold mb-1">Calculus II</p>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-tertiary-container w-[40%] h-full rounded-full"></div>
+</div>
+</div>
+<!-- Timetable Preview -->
+<div class="col-span-2 glass-card rounded-lg p-stack-sm mt-stack-sm">
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="calendar_month">calendar_month</span> Today's Schedule
+               </p>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-body-sm font-body-sm">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="text-on-surface-variant w-16">09:00 AM</span>
+<span class="text-on-surface bg-primary/5 px-2 py-0.5 rounded">CS 101 Lecture</span>
+</div>
+<div class="flex items-center gap-2 text-body-sm font-body-sm">
+<div class="w-2 h-2 rounded-full bg-tertiary-container"></div>
+<span class="text-on-surface-variant w-16">11:30 AM</span>
+<span class="text-on-surface bg-tertiary-container/5 px-2 py-0.5 rounded">MATH 201 Lab</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating elements -->
+<div class="absolute -right-6 -top-6 glass-card p-3 rounded-xl shadow-lg flex items-center gap-2 animate-bounce" style="animation-duration: 3s;">
+<span class="material-symbols-outlined text-primary" data-icon="check_circle">check_circle</span>
+<span class="text-label-sm font-label-sm font-semibold">Registration Open</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

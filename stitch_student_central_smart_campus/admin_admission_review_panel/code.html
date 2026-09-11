@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admission Review Panel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#6063ee",
+                      "error-container": "#ffdad6",
+                      "on-tertiary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-dim": "#d8dadc",
+                      "on-tertiary-container": "#f9fdff",
+                      "on-surface-variant": "#464554",
+                      "on-secondary-fixed-variant": "#3f465c",
+                      "surface-container-high": "#e6e8ea",
+                      "inverse-on-surface": "#eff1f3",
+                      "tertiary-fixed-dim": "#4cd7f6",
+                      "primary": "#4648d4",
+                      "on-primary-fixed": "#07006c",
+                      "tertiary": "#006577",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-container": "#5c647a",
+                      "tertiary-container": "#008096",
+                      "on-background": "#191c1e",
+                      "on-tertiary-fixed": "#001f26",
+                      "outline-variant": "#c7c4d7",
+                      "surface-container-low": "#f2f4f6",
+                      "tertiary-fixed": "#acedff",
+                      "surface": "#f7f9fb",
+                      "surface-bright": "#f7f9fb",
+                      "background": "#f7f9fb",
+                      "on-secondary": "#ffffff",
+                      "secondary-container": "#dae2fd",
+                      "inverse-surface": "#2d3133",
+                      "outline": "#767586",
+                      "on-primary": "#ffffff",
+                      "on-secondary-fixed": "#131b2e",
+                      "primary-fixed": "#e1e0ff",
+                      "surface-tint": "#494bd6",
+                      "inverse-primary": "#c0c1ff",
+                      "secondary-fixed-dim": "#bec6e0",
+                      "surface-container-highest": "#e0e3e5",
+                      "secondary": "#565e74",
+                      "on-primary-container": "#fffbff",
+                      "surface-container": "#eceef0",
+                      "secondary-fixed": "#dae2fd",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#004e5c",
+                      "on-primary-fixed-variant": "#2f2ebe",
+                      "surface-variant": "#e0e3e5",
+                      "on-surface": "#191c1e",
+                      "primary-fixed-dim": "#c0c1ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-md": "16px",
+                      "margin-mobile": "16px",
+                      "stack-sm": "8px",
+                      "stack-lg": "32px",
+                      "unit": "4px",
+                      "margin-desktop": "40px",
+                      "gutter": "24px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-lg": [
+                              "Geist"
+                      ],
+                      "display-lg": [
+                              "Geist"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Geist"
+                      ],
+                      "headline-lg-mobile": [
+                              "Geist"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md h-screen overflow-hidden flex flex-col md:flex-row">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full py-spacing-stack-lg bg-surface/60 dark:bg-surface-container-low/60 backdrop-blur-xl h-screen w-64 fixed left-0 top-0 border-r border-primary/10 dark:border-primary-fixed/10 shadow-sm z-40">
+<div class="px-gutter mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">EduCore Admin</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Management Portal</p>
+</div>
+<div class="flex-1 overflow-y-auto">
+<ul class="flex flex-col gap-2 px-4">
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary hover:bg-primary/5 dark:hover:bg-primary-fixed/10 transition-colors duration-200 active:scale-[0.98] font-body-md text-body-md label:font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Overview</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary hover:bg-primary/5 dark:hover:bg-primary-fixed/10 transition-colors duration-200 active:scale-[0.98] font-body-md text-body-md label:font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Students</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg bg-primary/10 dark:bg-primary-fixed/20 text-primary dark:text-primary-fixed border-r-2 border-primary active:scale-[0.98] transition-transform duration-150 font-body-md text-body-md label:font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Applications</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary hover:bg-primary/5 dark:hover:bg-primary-fixed/10 transition-colors duration-200 active:scale-[0.98] font-body-md text-body-md label:font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span>Documents</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary hover:bg-primary/5 dark:hover:bg-primary-fixed/10 transition-colors duration-200 active:scale-[0.98] font-body-md text-body-md label:font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span>Courses</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary hover:bg-primary/5 dark:hover:bg-primary-fixed/10 transition-colors duration-200 active:scale-[0.98] font-body-md text-body-md label:font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="app_registration">app_registration</span>
+<span>Registrations</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary hover:bg-primary/5 dark:hover:bg-primary-fixed/10 transition-colors duration-200 active:scale-[0.98] font-body-md text-body-md label:font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span>Schedules</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary hover:bg-primary/5 dark:hover:bg-primary-fixed/10 transition-colors duration-200 active:scale-[0.98] font-body-md text-body-md label:font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span>Notifications</span>
+</a>
+</li>
+</ul>
+</div>
+<div class="px-gutter mt-auto">
+<button class="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-surface-container hover:bg-surface-variant text-on-surface-variant font-label-md text-label-md transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                System Settings
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-64 relative min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-gutter h-full h-16 fixed top-0 right-0 left-0 md:left-64 z-30 bg-surface/40 dark:bg-surface-container-high/40 backdrop-blur-md border-b border-primary/10 dark:border-primary-fixed/10 shadow-sm text-primary dark:text-primary-fixed font-body-md text-body-md">
+<!-- Mobile Menu Button -->
+<button class="md:hidden p-2 text-on-surface-variant hover:text-primary transition-all duration-200 cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<!-- Brand Logo (Mobile only if hidden md) -->
+<div class="font-headline-md text-headline-md font-extrabold text-primary dark:text-primary-fixed md:hidden">EduCore Dashboard</div>
+<div class="hidden md:flex flex-1 max-w-2xl gap-4 items-center">
+<!-- Search & Filters -->
+<div class="flex-1 flex items-center bg-surface-container rounded-lg border border-outline-variant/30 px-3 py-1.5 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all duration-200">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-body-sm font-body-sm ml-2 placeholder-outline" placeholder="Search applications..." type="text"/>
+</div>
+<select class="bg-surface-container border border-outline-variant/30 rounded-lg px-3 py-1.5 text-body-sm font-body-sm text-on-surface-variant focus:border-primary/50 focus:ring-primary/50">
+<option>Program</option>
+<option>B.Tech Computer Science</option>
+<option>M.Sc Data Science</option>
+</select>
+<select class="bg-surface-container border border-outline-variant/30 rounded-lg px-3 py-1.5 text-body-sm font-body-sm text-on-surface-variant focus:border-primary/50 focus:ring-primary/50">
+<option>Status</option>
+<option>Pending</option>
+<option>Under Review</option>
+</select>
+<select class="bg-surface-container border border-outline-variant/30 rounded-lg px-3 py-1.5 text-body-sm font-body-sm text-on-surface-variant focus:border-primary/50 focus:ring-primary/50">
+<option>Date Range</option>
+<option>Last 7 Days</option>
+<option>Last 30 Days</option>
+</select>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary transition-all duration-200 cursor-pointer active:opacity-80 rounded-full">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span>
+</button>
+<button class="p-2 text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary transition-all duration-200 cursor-pointer active:opacity-80 rounded-full hidden md:block">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="flex items-center gap-2 cursor-pointer active:opacity-80 pl-2">
+<img alt="Administrator Avatar" class="w-8 h-8 rounded-full border border-primary/20 object-cover" data-alt="A small circular avatar of a university administrator wearing glasses, set against a soft, bright, high-key light background, in a modern minimal style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6HMt_hDSZFeuVOWQtwt0WIdot2J-O6bEfGcD_YXSvXhFcztfGvVy4cgb3CtpITw4ujsPxYq93N6K-WdUH-zVy0URBi5InClPsf6LYzkIKD2xEjIWsPKM7cVCX4MYkJUXyy45iNNfoCyThm3fT7btRAQFxgmZpfV9CQhwJ6r_diEDcqZ3_U1-ZBLSsfZo1sjw2Kk1SIDkOQZFDiZvDFT594Oje9CEWEGwMiDXsLaNb8qFFY2r5Jt9d"/>
+<span class="hidden lg:block text-body-sm font-body-sm font-medium">Admin Profile</span>
+</button>
+</div>
+</header>
+<!-- Canvas / Main Area -->
+<main class="flex-1 pt-24 px-gutter pb-8 overflow-y-auto flex gap-6">
+<div class="flex-1 flex flex-col min-w-0">
+<div class="mb-6 flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg font-semibold text-on-surface">Admission Review</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Review and process student applications.</p>
+</div>
+</div>
+<!-- Glass Container Data Table -->
+<div class="bg-surface/50 backdrop-blur-xl border border-white/10 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden flex-1 flex flex-col">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-primary/10 bg-surface-container-low/50">
+<th class="py-4 px-6 font-label-md text-label-md text-on-surface-variant font-medium">Student</th>
+<th class="py-4 px-6 font-label-md text-label-md text-on-surface-variant font-medium">Application ID</th>
+<th class="py-4 px-6 font-label-md text-label-md text-on-surface-variant font-medium">Program</th>
+<th class="py-4 px-6 font-label-md text-label-md text-on-surface-variant font-medium">Submitted Date</th>
+<th class="py-4 px-6 font-label-md text-label-md text-on-surface-variant font-medium">Status</th>
+<th class="py-4 px-6 font-label-md text-label-md text-on-surface-variant font-medium text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-primary/5">
+<!-- Row 1 (Selected) -->
+<tr class="hover:bg-primary/5 transition-colors cursor-pointer bg-primary/5 group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A portrait avatar of Alex Rivera, a young student looking optimistic, soft lighting, modern minimalist style, isolated on a light gray background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAN8yR67B4SFF1fGdiWyejT3u6HpRC7I2Oyn8bqOGWWRYSzzdwRA1usUOQa4MSjr6QscyYowoXEkNL4qs-MosnUw3Idw-YZJ38dlnAcH1vVWVT9uw4h-_j8BwdSPj0ObDYXCXsreD_xN4SonFJa3D79U2OJMwRPVZGdQMp0ih233Jcyf-Ebw-Ul9oCUUGlYu3A7tkgrzmiEImzSH3irJzaRWOs6jZZxQ2y93QlrUQLhnRW2ycCjfdMf"/>
+<span class="font-body-md text-body-md font-medium text-on-surface group-hover:text-primary transition-colors">Alex Rivera</span>
+</div>
+</td>
+<td class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant">SC-2026-1102</td>
+<td class="py-4 px-6 font-body-sm text-body-sm text-on-surface-variant">B.Tech Computer Science</td>
+<td class="py-4 px-6 font-body-sm text-body-sm text-on-surface-variant">Oct 12, 2025</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+                                            Pending
+                                        </span>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-primary hover:text-primary-container font-label-md text-label-md font-medium transition-colors">Review</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-primary/5 transition-colors cursor-pointer group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A portrait avatar of Priya Sharma, a young female student with a confident expression, modern high-key lighting, soft white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSRut6SJ0UQovO17vxnHKAuxfBnWL2qVusNH-I9YUNueKWyJcVxFbvhRAO4PSaafgsbqkf1_Ap2IM3Q045YSFw3mmQS5H2x2d0greQ-V3-wf-wAldis-E8ucmtSpr-eQsb-nVhQdq2IWWBsgpkjkFUOygXsSReGFTyLjYJXrS34i-l4-zKwhu8WSy2zbrXDpp6v-Wwq5Imv20wpsK7Vqj6aGvl5Hnse0q3QtXfoehRVbDM94GtJTaa"/>
+<span class="font-body-md text-body-md font-medium text-on-surface group-hover:text-primary transition-colors">Priya Sharma</span>
+</div>
+</td>
+<td class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant">SC-2026-1098</td>
+<td class="py-4 px-6 font-body-sm text-body-sm text-on-surface-variant">M.Sc Data Science</td>
+<td class="py-4 px-6 font-body-sm text-body-sm text-on-surface-variant">Oct 11, 2025</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+                                            Under Review
+                                        </span>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-primary hover:text-primary-container font-label-md text-label-md font-medium transition-colors">Review</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Right Side Panel (Details) -->
+<div class="w-96 bg-surface/80 backdrop-blur-2xl border border-white/20 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex flex-col h-[calc(100vh-8rem)] sticky top-24 overflow-hidden transform transition-transform duration-300 translate-x-0 hidden lg:flex">
+<!-- Panel Header -->
+<div class="p-6 border-b border-primary/10 flex items-start gap-4">
+<img class="w-16 h-16 rounded-lg object-cover shadow-sm" data-alt="A high quality portrait avatar of Alex Rivera for an application profile, focused and professional look, bright airy minimal aesthetic, well lit." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRKGpUSKXB7mgYmHvSH1EeDOyMREYedJzyjglwLwQw8Uavb0oQOcYPQOQkM4M62rYP0Kb3ODcREJ7kZ9MsMNTmvJjF2XjuupPaFNz1sihSIANqAD3m-x5x8h-D3EuCRodgQqTkUbyzJ-ayXiFQNM6yhpccCbogrTQyl04mKIO1ap5tLEdHAZUf8yme57wF5cYQHX9piMWGi5-G6qv7rvDdqhPP4_3xPgTFMpWjyvw8D_7ve5FjPtwv"/>
+<div class="flex-1">
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface">Alex Rivera</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">ID: SC-2026-1102</p>
+<span class="inline-flex items-center px-2 py-0.5 rounded font-label-sm text-label-sm font-medium bg-amber-100 text-amber-800 mt-2">Pending Review</span>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Panel Content -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<!-- Summaries -->
+<div class="space-y-4">
+<h4 class="font-label-md text-label-md font-semibold text-on-surface uppercase tracking-wider text-xs">Personal &amp; Academic</h4>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<span class="block font-label-sm text-label-sm text-on-surface-variant">GPA</span>
+<span class="block font-body-md text-body-md text-on-surface font-medium">3.8 / 4.0</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-on-surface-variant">Prev. Institution</span>
+<span class="block font-body-md text-body-md text-on-surface font-medium truncate" title="Springfield High">Springfield High</span>
+</div>
+</div>
+</div>
+<hr class="border-primary/10"/>
+<!-- Document Checklist -->
+<div class="space-y-4">
+<h4 class="font-label-md text-label-md font-semibold text-on-surface uppercase tracking-wider text-xs">Document Checklist</h4>
+<ul class="space-y-3">
+<li class="flex items-center justify-between p-3 bg-surface-container rounded-lg border border-primary/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">ID Proof</span>
+</div>
+<span class="font-label-sm text-label-sm text-green-600 bg-green-100 px-2 py-0.5 rounded">Verified</span>
+</li>
+<li class="flex items-center justify-between p-3 bg-surface-container rounded-lg border border-primary/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-amber-500 text-lg">error</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Transcript</span>
+</div>
+<span class="font-label-sm text-label-sm text-amber-600 bg-amber-100 px-2 py-0.5 rounded">Missing</span>
+</li>
+<li class="flex items-center justify-between p-3 bg-surface-container rounded-lg border border-primary/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Photo</span>
+</div>
+<span class="font-label-sm text-label-sm text-green-600 bg-green-100 px-2 py-0.5 rounded">Verified</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- Panel Actions -->
+<div class="p-6 border-t border-primary/10 bg-surface-container-low/50 space-y-3">
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-semibold py-3 rounded-lg shadow-sm transition-all duration-200">
+                        Approve Application
+                    </button>
+<button class="w-full bg-transparent border border-outline hover:border-primary text-primary font-label-md text-label-md font-semibold py-3 rounded-lg transition-all duration-200">
+                        Request Changes
+                    </button>
+<div class="text-center pt-2">
+<button class="text-error hover:text-error-container font-label-md text-label-md font-medium transition-colors">
+                            Reject Application
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

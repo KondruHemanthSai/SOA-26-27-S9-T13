@@ -1,0 +1,452 @@
+{
+  "info": {
+    "name": "Student Central - Phase 3 Student Service Collection",
+    "_postman_id": "8f5a1372-9b21-4822-a982-cb250a112f45",
+    "description": "Postman test collection for Phase 3: Student Profile & Academic Record Management through API Gateway (Port 8080).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "studentToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "createdStudentId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Student Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Alice Walker\",\n  \"email\": \"alice.walker@example.com\",\n  \"password\": \"Password@123\",\n  \"role\": \"STUDENT\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        }
+      }
+    },
+    {
+      "name": "2. Student Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set('studentToken', jsonData.token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"alice.walker@example.com\",\n  \"password\": \"Password@123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "3. Create Student Profile",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 Created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set('createdStudentId', jsonData.studentId);",
+              "pm.expect(jsonData.profileCompleted).to.eql(true);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Walker\",\n  \"phone\": \"+1-555-0199\",\n  \"dateOfBirth\": \"2003-04-12\",\n  \"address\": \"404 Campus Lane, Tech City\",\n  \"program\": \"B.Tech Computer Science\",\n  \"department\": \"Computer Science\",\n  \"enrollmentYear\": 2026,\n  \"semester\": 1,\n  \"academicRecord\": {\n    \"previousInstitution\": \"Springdale High\",\n    \"board\": \"CBSE\",\n    \"percentage\": 94.5,\n    \"cgpa\": 9.4,\n    \"graduationYear\": 2022\n  }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/students/profile",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "students",
+            "profile"
+          ]
+        }
+      }
+    },
+    {
+      "name": "4. Get Own Profile",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.expect(jsonData.email).to.eql('alice.walker@example.com');",
+              "pm.expect(jsonData.firstName).to.eql('Alice');"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/students/profile",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "students",
+            "profile"
+          ]
+        }
+      }
+    },
+    {
+      "name": "5. Update Own Profile",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.expect(jsonData.address).to.eql('777 Innovation Way');"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"address\": \"777 Innovation Way\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/students/profile",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "students",
+            "profile"
+          ]
+        }
+      }
+    },
+    {
+      "name": "6. Get Academic Record",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/students/profile/academic-record",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "students",
+            "profile",
+            "academic-record"
+          ]
+        }
+      }
+    },
+    {
+      "name": "7. Update Academic Record",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"previousInstitution\": \"National Science Academy\",\n  \"board\": \"State Board\",\n  \"percentage\": 96.0,\n  \"cgpa\": 9.6,\n  \"graduationYear\": 2022\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/students/profile/academic-record",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "students",
+            "profile",
+            "academic-record"
+          ]
+        }
+      }
+    },
+    {
+      "name": "8. Admin Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set('adminToken', jsonData.token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@studentcentral.com\",\n  \"password\": \"Admin@12345\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "9. Admin List Students",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/students?department=Computer Science&status=PENDING",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "students"
+          ],
+          "query": [
+            {
+              "key": "department",
+              "value": "Computer Science"
+            },
+            {
+              "key": "status",
+              "value": "PENDING"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "10. Admin Get Student by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/students/{{createdStudentId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "students",
+            "{{createdStudentId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "11. Student Forbidden from Listing All Students (Expect 403)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 403 Forbidden\", function () {",
+              "    pm.response.to.have.status(403);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/students",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "students"
+          ]
+        }
+      }
+    },
+    {
+      "name": "12. Unauthenticated Profile Request (Expect 401)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 401 Unauthorized\", function () {",
+              "    pm.response.to.have.status(401);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/students/profile",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "students",
+            "profile"
+          ]
+        }
+      }
+    }
+  ]
+}

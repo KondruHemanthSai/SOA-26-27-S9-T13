@@ -1,0 +1,440 @@
+{
+  "info": {
+    "_postman_id": "8c821044-f3ad-479a-bfe9-phase5course01",
+    "name": "Student Central — Phase 5 (Course Service)",
+    "description": "Comprehensive Postman test collection for Phase 5 Course Catalogue and Academic Prerequisite Management via Spring Cloud API Gateway (http://localhost:8080).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "gatewayUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "studentToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "createdCourseCode",
+      "value": "CS501",
+      "type": "string"
+    },
+    {
+      "key": "prerequisiteCourseCode",
+      "value": "CS201",
+      "type": "string"
+    },
+    {
+      "key": "prerequisiteId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Student Authentication",
+      "item": [
+        {
+          "name": "1.1 Student Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set(\"studentToken\", jsonData.token || jsonData.accessToken);",
+                  "pm.collectionVariables.set(\"studentToken\", jsonData.token || jsonData.accessToken);",
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/auth/login",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Admin Authentication & Course Setup",
+      "item": [
+        {
+          "name": "2.1 Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set(\"adminToken\", jsonData.token || jsonData.accessToken);",
+                  "pm.collectionVariables.set(\"adminToken\", jsonData.token || jsonData.accessToken);",
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@studentcentral.com\",\n  \"password\": \"AdminSecret123!\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/auth/login",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "2.2 Admin Create Prerequisite Course (CS201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"CS201\",\n  \"courseName\": \"Data Structures and Algorithms\",\n  \"description\": \"Fundamental data structures including lists, trees, graphs, and algorithms.\",\n  \"department\": \"CSE\",\n  \"semester\": 2,\n  \"credits\": 4,\n  \"capacity\": 60,\n  \"courseType\": \"CORE\",\n  \"faculty\": \"Dr. Alan Turing\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses"]
+            }
+          }
+        },
+        {
+          "name": "2.3 Admin Create Course (CS501)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"CS501\",\n  \"courseName\": \"Machine Learning\",\n  \"description\": \"Introduction to statistical learning, neural networks, and deep learning.\",\n  \"department\": \"CSE\",\n  \"semester\": 5,\n  \"credits\": 4,\n  \"capacity\": 40,\n  \"courseType\": \"CORE\",\n  \"faculty\": \"Dr. Andrew Ng\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses"]
+            }
+          }
+        },
+        {
+          "name": "2.4 Admin Add Prerequisite (CS201 -> CS501)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.prerequisites && jsonData.prerequisites.length > 0) {",
+                  "  pm.collectionVariables.set(\"prerequisiteId\", jsonData.prerequisites[0].id);",
+                  "}",
+                  "pm.test(\"Status is 201\", function () { pm.response.to.have.status(201); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prerequisiteCourseId\": \"CS201\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses/CS501/prerequisites",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses", "CS501", "prerequisites"]
+            }
+          }
+        },
+        {
+          "name": "2.5 Admin Update Course Capacity",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"capacity\": 50,\n  \"faculty\": \"Dr. Andrew Ng & Staff\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses/CS501",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses", "CS501"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Student Course Catalogue & Discovery",
+      "item": [
+        {
+          "name": "3.1 List Active Courses",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses"]
+            }
+          }
+        },
+        {
+          "name": "3.2 Search Courses (keyword 'learning')",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses?search=learning",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses"],
+              "query": [
+                { "key": "search", "value": "learning" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.3 Filter Courses (Department=CSE & Semester=5)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses?department=CSE&semester=5",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses"],
+              "query": [
+                { "key": "department", "value": "CSE" },
+                { "key": "semester", "value": "5" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.4 Filter Available Courses",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses?available=true",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses"],
+              "query": [
+                { "key": "available", "value": "true" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.5 Get Course Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses/CS501",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses", "CS501"]
+            }
+          }
+        },
+        {
+          "name": "3.6 Get Course Availability",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses/CS501/availability",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses", "CS501", "availability"]
+            }
+          }
+        },
+        {
+          "name": "3.7 Get Course Prerequisites",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses/CS501/prerequisites",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses", "CS501", "prerequisites"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Course Lifecycle & Management",
+      "item": [
+        {
+          "name": "4.1 Deactivate Course (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses/CS501/deactivate",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses", "CS501", "deactivate"]
+            }
+          }
+        },
+        {
+          "name": "4.2 Activate Course (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses/CS501/activate",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses", "CS501", "activate"]
+            }
+          }
+        },
+        {
+          "name": "4.3 Delete Prerequisite (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses/CS501/prerequisites/CS201",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses", "CS501", "prerequisites", "CS201"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Negative Tests & Security Guards",
+      "item": [
+        {
+          "name": "5.1 Duplicate Course Code Rejection (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"CS501\",\n  \"courseName\": \"Duplicate Course\",\n  \"department\": \"CSE\",\n  \"semester\": 5,\n  \"credits\": 4,\n  \"capacity\": 30,\n  \"courseType\": \"CORE\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses"]
+            }
+          }
+        },
+        {
+          "name": "5.2 Student Attempting Admin Endpoint (403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"CS999\",\n  \"courseName\": \"Unauthorized Course\",\n  \"department\": \"CSE\",\n  \"semester\": 1,\n  \"credits\": 3,\n  \"capacity\": 20,\n  \"courseType\": \"ELECTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses"]
+            }
+          }
+        },
+        {
+          "name": "5.3 Self Prerequisite Rejection (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prerequisiteCourseId\": \"CS501\"\n}"
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses/CS501/prerequisites",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses", "CS501", "prerequisites"]
+            }
+          }
+        },
+        {
+          "name": "5.4 Unauthenticated Request Rejection (401)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{gatewayUrl}}/api/courses",
+              "host": ["{{gatewayUrl}}"],
+              "path": ["api", "courses"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

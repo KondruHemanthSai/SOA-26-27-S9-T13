@@ -1,0 +1,279 @@
+{
+	"info": {
+		"_postman_id": "9d82136e-3990-4c28-97ef-572bb46c6001",
+		"name": "Student Central - Phase 6: Registration Service",
+		"description": "Postman API Collection for Student Central Phase 6 Course Registration Service. Covers course enrollment, multi-step validation pipeline (student eligibility, duplicate check, prerequisites, credit limit, seat availability, schedule conflict), course dropping, active/history retrieval, and admin audit queries.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "directUrl",
+			"value": "http://localhost:8085",
+			"type": "string"
+		},
+		{
+			"key": "studentToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "adminToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "courseId",
+			"value": "CS501",
+			"type": "string"
+		},
+		{
+			"key": "registrationId",
+			"value": "SC-REG-2026-00001",
+			"type": "string"
+		},
+		{
+			"key": "studentId",
+			"value": "SC20260001",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "01. Student: Register / Enroll in Course",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"courseId\": \"{{courseId}}\",\n    \"semester\": 5,\n    \"academicYear\": \"2026-27\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/registrations",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"registrations"
+					]
+				},
+				"description": "Submits a course enrollment request through the 7-step business validation pipeline."
+			},
+			"response": []
+		},
+		{
+			"name": "02. Student: Get My Registrations",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/registrations/my",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"registrations",
+						"my"
+					]
+				},
+				"description": "Retrieves all registrations associated with the authenticated student profile."
+			},
+			"response": []
+		},
+		{
+			"name": "03. Student: Get My Active Enrollments",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/registrations/my/active",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"registrations",
+						"my",
+						"active"
+					]
+				},
+				"description": "Retrieves only currently active (REGISTERED) course enrollments."
+			},
+			"response": []
+		},
+		{
+			"name": "04. Student: Get Registration History",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/registrations/my/history",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"registrations",
+						"my",
+						"history"
+					]
+				},
+				"description": "Retrieves complete registration history including DROPPED courses."
+			},
+			"response": []
+		},
+		{
+			"name": "05. Authenticated: Get Registration by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/registrations/{{registrationId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"registrations",
+						"{{registrationId}}"
+					]
+				},
+				"description": "Retrieves single registration metadata by human-readable registration ID (e.g. SC-REG-2026-00001)."
+			},
+			"response": []
+		},
+		{
+			"name": "06. Student: Drop Registered Course",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/registrations/{{registrationId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"registrations",
+						"{{registrationId}}"
+					]
+				},
+				"description": "Drops an active course registration, transitions status to DROPPED, and releases the reserved seat."
+			},
+			"response": []
+		},
+		{
+			"name": "07. Admin: List All Registrations",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/registrations?courseId={{courseId}}&semester=5&status=REGISTERED",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"registrations"
+					],
+					"query": [
+						{
+							"key": "courseId",
+							"value": "{{courseId}}"
+						},
+						{
+							"key": "semester",
+							"value": "5"
+						},
+						{
+							"key": "status",
+							"value": "REGISTERED"
+						}
+					]
+				},
+				"description": "Admin query to audit course registrations filtered by courseId, semester, and status."
+			},
+			"response": []
+		},
+		{
+			"name": "08. Admin: Get Registrations for Student",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/registrations/student/{{studentId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"registrations",
+						"student",
+						"{{studentId}}"
+					]
+				},
+				"description": "Admin endpoint to retrieve all registrations for a specific student identifier."
+			},
+			"response": []
+		}
+	]
+}

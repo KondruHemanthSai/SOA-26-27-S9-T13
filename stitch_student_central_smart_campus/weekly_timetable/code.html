@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Timetable - Student Central</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config from Brand Anchors -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#001f26",
+                        "secondary-container": "#dae2fd",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "primary": "#4648d4",
+                        "tertiary-fixed": "#acedff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#dae2fd",
+                        "outline-variant": "#c7c4d7",
+                        "on-primary-fixed": "#07006c",
+                        "error": "#ba1a1a",
+                        "on-surface": "#191c1e",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#494bd6",
+                        "on-surface-variant": "#464554",
+                        "surface-container-low": "#f2f4f6",
+                        "on-background": "#191c1e",
+                        "surface-container": "#eceef0",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "outline": "#767586",
+                        "inverse-surface": "#2d3133",
+                        "on-tertiary-container": "#f9fdff",
+                        "tertiary-container": "#008096",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "background": "#f7f9fb",
+                        "surface-variant": "#e0e3e5",
+                        "on-secondary-container": "#5c647a",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#131b2e",
+                        "inverse-primary": "#c0c1ff",
+                        "surface-container-high": "#e6e8ea",
+                        "secondary": "#565e74",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#e1e0ff",
+                        "surface": "#f7f9fb",
+                        "tertiary": "#006577",
+                        "inverse-on-surface": "#eff1f3",
+                        "primary-container": "#6063ee",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "on-primary-container": "#fffbff",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#d8dadc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "stack-lg": "32px",
+                        "stack-md": "16px",
+                        "stack-sm": "8px",
+                        "unit": "4px",
+                        "margin-desktop": "40px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-lg": ["Geist"],
+                        "headline-md": ["Geist"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Geist"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.04em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (from JSON) -->
+<nav class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 z-50 border-r border-primary/5 shadow-2xl bg-surface-container-low/40 backdrop-blur-2xl p-stack-md gap-stack-sm">
+<!-- Brand Area -->
+<div class="px-2 mb-stack-lg mt-2">
+<h1 class="font-headline-lg text-headline-lg font-black tracking-tighter text-primary">Student Central</h1>
+<p class="font-label-sm text-label-sm text-secondary uppercase tracking-widest mt-1">University Portal</p>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-secondary-container/30 rounded-lg transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Overview
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-secondary-container/30 rounded-lg transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">school</span>
+                Admission
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-secondary-container/30 rounded-lg transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">library_books</span>
+                Courses
+            </a>
+<!-- Active State Navigation -->
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-label-md bg-primary-container/80 text-on-primary-container rounded-lg shadow-inner" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+                Timetable
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-secondary-container/30 rounded-lg transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">folder</span>
+                Resources
+            </a>
+</div>
+<!-- Footer Area -->
+<div class="mt-auto pt-4 border-t border-outline-variant/30">
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-secondary-container/30 rounded-lg transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar (from JSON) -->
+<header class="w-full sticky top-0 z-40 shadow-sm border-b border-primary/10 bg-surface/60 backdrop-blur-xl flex justify-between items-center px-gutter py-stack-sm">
+<!-- Search Bar (on_left) -->
+<div class="flex items-center bg-surface-container/50 rounded-full px-4 py-2 border border-outline-variant/50 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all max-w-md w-full">
+<span class="material-symbols-outlined text-secondary text-lg">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full font-body-sm text-body-sm text-on-surface placeholder:text-secondary ml-2 outline-none" placeholder="Search courses, rooms, or peers..." type="text"/>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<button aria-label="notifications" class="p-2 rounded-full text-primary hover:bg-primary-container/10 transition-colors active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button aria-label="settings" class="p-2 rounded-full text-primary hover:bg-primary-container/10 transition-colors active:scale-95">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-9 h-9 rounded-full overflow-hidden border-2 border-surface-container ring-1 ring-primary/20 cursor-pointer hover:ring-primary transition-all">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A professional headshot of a diverse university student in a bright, modern campus environment. Warm, inviting lighting, high resolution, minimalist background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8hKejNiwxdkR5uAtLNzWOkMwcTz8NMe3kPLYsDMUBc5Lfz6Ja6p8iBagQSQpL18T9TxwFx79stKjJSOzM9HjmLpV1-KdDMQ5idyABmrJ2wn0BvAerkBUa346v7aAF0rVSlLftCOYQYvQWyO6BROzJjWw0Q4FjvrmW1HMvtxwuYz_XzLYvv-ehTGR0bUhFQE8uueCZwbO3rVfCAOs7jBbFD2R7NLfhifyKAlbeiYMtfAV0YGEABOO3"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-gutter max-w-container-max mx-auto w-full">
+<!-- Header & Status Bar -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between mb-stack-lg gap-4">
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Weekly Schedule</h2>
+<p class="font-body-sm text-body-sm text-secondary mt-1">Fall Semester 2024</p>
+</div>
+<div class="inline-flex items-center gap-2 bg-tertiary-container/10 text-tertiary border border-tertiary/20 px-4 py-2 rounded-full font-label-md text-label-md shadow-sm backdrop-blur-sm">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                    No timetable conflicts
+                </div>
+</div>
+<!-- Timetable Grid -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 shadow-sm overflow-hidden flex flex-col">
+<!-- Grid Header (Days) -->
+<div class="grid grid-cols-[60px_repeat(5,1fr)] md:grid-cols-[80px_repeat(5,1fr)] border-b border-outline-variant/60 bg-surface-container/30">
+<div class="p-4"></div> <!-- Empty corner cell -->
+<div class="p-4 text-center font-label-md text-label-md text-on-surface-variant font-medium border-l border-outline-variant/30">Monday</div>
+<div class="p-4 text-center font-label-md text-label-md text-on-surface-variant font-medium border-l border-outline-variant/30">Tuesday</div>
+<div class="p-4 text-center font-label-md text-label-md text-on-surface-variant font-medium border-l border-outline-variant/30">Wednesday</div>
+<div class="p-4 text-center font-label-md text-label-md text-on-surface-variant font-medium border-l border-outline-variant/30">Thursday</div>
+<div class="p-4 text-center font-label-md text-label-md text-on-surface-variant font-medium border-l border-outline-variant/30">Friday</div>
+</div>
+<!-- Grid Body -->
+<div class="relative grid grid-cols-[60px_repeat(5,1fr)] md:grid-cols-[80px_repeat(5,1fr)] grid-rows-8 h-[800px] bg-[linear-gradient(to_bottom,var(--tw-colors-surface-variant)_1px,transparent_1px)] bg-[size:100%_100px]">
+<!-- Time Column (Left) -->
+<div class="row-span-8 flex flex-col border-r border-outline-variant/60 bg-surface-container-lowest z-10">
+<div class="h-[100px] flex items-start justify-end pr-3 pt-2 font-label-sm text-label-sm text-secondary">09:00</div>
+<div class="h-[100px] flex items-start justify-end pr-3 pt-2 font-label-sm text-label-sm text-secondary">10:00</div>
+<div class="h-[100px] flex items-start justify-end pr-3 pt-2 font-label-sm text-label-sm text-secondary">11:00</div>
+<div class="h-[100px] flex items-start justify-end pr-3 pt-2 font-label-sm text-label-sm text-secondary">12:00</div>
+<div class="h-[100px] flex items-start justify-end pr-3 pt-2 font-label-sm text-label-sm text-secondary">13:00</div>
+<div class="h-[100px] flex items-start justify-end pr-3 pt-2 font-label-sm text-label-sm text-secondary">14:00</div>
+<div class="h-[100px] flex items-start justify-end pr-3 pt-2 font-label-sm text-label-sm text-secondary">15:00</div>
+<div class="h-[100px] flex items-start justify-end pr-3 pt-2 font-label-sm text-label-sm text-secondary">16:00</div>
+</div>
+<!-- Column Dividers -->
+<div class="col-start-2 row-span-8 border-l border-outline-variant/30"></div>
+<div class="col-start-3 row-span-8 border-l border-outline-variant/30"></div>
+<div class="col-start-4 row-span-8 border-l border-outline-variant/30"></div>
+<div class="col-start-5 row-span-8 border-l border-outline-variant/30"></div>
+<div class="col-start-6 row-span-8 border-l border-outline-variant/30"></div>
+<!-- Course Block 1: CS (Monday 10-12) -->
+<div class="absolute col-start-2 top-[100px] h-[200px] w-full p-1 z-20">
+<div class="h-full w-full bg-primary/10 backdrop-blur-md border border-primary/20 rounded-lg p-3 flex flex-col hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer group">
+<span class="font-label-sm text-label-sm text-primary mb-1">COMP 301</span>
+<h3 class="font-body-sm text-body-sm font-semibold text-on-surface leading-tight">Data Structures & Algorithms</h3>
+<div class="mt-auto flex items-center gap-1 font-label-sm text-label-sm text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                Room 402, Turing Hall
+                            </div>
+</div>
+</div>
+<!-- Course Block 2: Math (Tuesday 9-11) -->
+<div class="absolute col-start-3 top-[0px] h-[200px] w-full p-1 z-20">
+<div class="h-full w-full bg-tertiary/10 backdrop-blur-md border border-tertiary/20 rounded-lg p-3 flex flex-col hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer group">
+<span class="font-label-sm text-label-sm text-tertiary mb-1">MATH 250</span>
+<h3 class="font-body-sm text-body-sm font-semibold text-on-surface leading-tight">Multivariable Calculus</h3>
+<div class="mt-auto flex items-center gap-1 font-label-sm text-label-sm text-secondary group-hover:text-tertiary transition-colors">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                Hall B, Science Bldg
+                            </div>
+</div>
+</div>
+<!-- Course Block 3: Seminar (Wednesday 13-15) -->
+<div class="absolute col-start-4 top-[400px] h-[200px] w-full p-1 z-20">
+<div class="h-full w-full bg-secondary-container/30 backdrop-blur-md border border-secondary-fixed/50 rounded-lg p-3 flex flex-col hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer group">
+<span class="font-label-sm text-label-sm text-on-secondary-container mb-1">PHIL 101</span>
+<h3 class="font-body-sm text-body-sm font-semibold text-on-surface leading-tight">Intro to Ethics</h3>
+<div class="mt-auto flex items-center gap-1 font-label-sm text-label-sm text-secondary group-hover:text-on-secondary-container transition-colors">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                Seminar Room 3
+                            </div>
+</div>
+</div>
+<!-- Course Block 4: CS Lab (Thursday 14-16) -->
+<div class="absolute col-start-5 top-[500px] h-[200px] w-full p-1 z-20">
+<div class="h-full w-full bg-primary/10 backdrop-blur-md border border-primary/20 rounded-lg p-3 flex flex-col hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer group">
+<span class="font-label-sm text-label-sm text-primary mb-1">COMP 301L</span>
+<h3 class="font-body-sm text-body-sm font-semibold text-on-surface leading-tight">Data Structures Lab</h3>
+<div class="mt-auto flex items-center gap-1 font-label-sm text-label-sm text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[14px]">computer</span>
+                                Lab 2, Turing Hall
+                            </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

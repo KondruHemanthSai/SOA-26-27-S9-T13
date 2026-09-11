@@ -1,0 +1,703 @@
+{
+  "info": {
+    "name": "Student Central - Phase 4 Admission Service Collection",
+    "_postman_id": "9a6b1284-4d89-4991-88f2-1a48c9032fa8",
+    "description": "Postman test collection for Phase 4: Admission Application, Document Metadata & Admin Review Workflow through API Gateway (Port 8080).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "studentToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "createdApplicationId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "documentId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Student Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Bob Smith\",\n  \"email\": \"bob.smith@example.com\",\n  \"password\": \"Password@123\",\n  \"role\": \"STUDENT\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        }
+      }
+    },
+    {
+      "name": "2. Student Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set('studentToken', jsonData.token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"bob.smith@example.com\",\n  \"password\": \"Password@123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "3. Create Admission Application (Draft)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 Created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set('createdApplicationId', jsonData.applicationId);",
+              "pm.expect(jsonData.status).to.eql('DRAFT');"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"program\": \"B.Tech Computer Science\",\n  \"department\": \"Computer Science\",\n  \"academicDetails\": {\n    \"previousInstitution\": \"Oakridge High\",\n    \"board\": \"CBSE\",\n    \"percentage\": 91.5,\n    \"cgpa\": 9.1,\n    \"graduationYear\": 2023\n  }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/apply",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "apply"
+          ]
+        }
+      }
+    },
+    {
+      "name": "4. Get My Application",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.expect(jsonData.status).to.eql('DRAFT');",
+              "pm.expect(jsonData.program).to.eql('B.Tech Computer Science');"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/my-application",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "my-application"
+          ]
+        }
+      }
+    },
+    {
+      "name": "5. Update Application (Draft)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.expect(jsonData.program).to.eql('B.Tech Artificial Intelligence');"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"program\": \"B.Tech Artificial Intelligence\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/{{createdApplicationId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "{{createdApplicationId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "6. Upload Document - ID Proof",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"ID_PROOF\",\n  \"fileName\": \"national_id.pdf\",\n  \"fileUrl\": \"/uploads/documents/national_id.pdf\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/{{createdApplicationId}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "{{createdApplicationId}}",
+            "documents"
+          ]
+        }
+      }
+    },
+    {
+      "name": "7. Upload Document - Marks Certificate",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"MARKS_CERTIFICATE\",\n  \"fileName\": \"12th_marksheet.pdf\",\n  \"fileUrl\": \"/uploads/documents/12th_marksheet.pdf\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/{{createdApplicationId}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "{{createdApplicationId}}",
+            "documents"
+          ]
+        }
+      }
+    },
+    {
+      "name": "8. Upload Document - Transfer Certificate",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 Created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set('documentId', jsonData.id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"TRANSFER_CERTIFICATE\",\n  \"fileName\": \"transfer_cert.pdf\",\n  \"fileUrl\": \"/uploads/documents/transfer_cert.pdf\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/{{createdApplicationId}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "{{createdApplicationId}}",
+            "documents"
+          ]
+        }
+      }
+    },
+    {
+      "name": "9. List Application Documents",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/{{createdApplicationId}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "{{createdApplicationId}}",
+            "documents"
+          ]
+        }
+      }
+    },
+    {
+      "name": "10. Submit Application",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.expect(jsonData.status).to.eql('SUBMITTED');"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/{{createdApplicationId}}/submit",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "{{createdApplicationId}}",
+            "submit"
+          ]
+        }
+      }
+    },
+    {
+      "name": "11. Admin Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set('adminToken', jsonData.token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@studentcentral.com\",\n  \"password\": \"Admin@12345\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "12. Admin List Applications with Filter",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions?department=Computer Science&status=SUBMITTED",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions"
+          ],
+          "query": [
+            {
+              "key": "department",
+              "value": "Computer Science"
+            },
+            {
+              "key": "status",
+              "value": "SUBMITTED"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "13. Admin Get Application Detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/{{createdApplicationId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "{{createdApplicationId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "14. Admin Start Review",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.expect(jsonData.status).to.eql('UNDER_REVIEW');"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"action\": \"START_REVIEW\",\n  \"remarks\": \"Starting review of submitted credentials\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/{{createdApplicationId}}/review",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "{{createdApplicationId}}",
+            "review"
+          ]
+        }
+      }
+    },
+    {
+      "name": "15. Admin Review Document",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"VERIFIED\",\n  \"remarks\": \"Verified against state board database\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/{{createdApplicationId}}/documents/{{documentId}}/review",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "{{createdApplicationId}}",
+            "documents",
+            "{{documentId}}",
+            "review"
+          ]
+        }
+      }
+    },
+    {
+      "name": "16. Admin Approve Application",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "pm.expect(jsonData.status).to.eql('APPROVED');"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"action\": \"APPROVE\",\n  \"remarks\": \"Admission application approved. Congratulations!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/{{createdApplicationId}}/review",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "{{createdApplicationId}}",
+            "review"
+          ]
+        }
+      }
+    },
+    {
+      "name": "17. Student Forbidden from Listing Applications (Expect 403)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 403 Forbidden\", function () {",
+              "    pm.response.to.have.status(403);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{studentToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions"
+          ]
+        }
+      }
+    },
+    {
+      "name": "18. Unauthenticated Application Request (Expect 401)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 401 Unauthorized\", function () {",
+              "    pm.response.to.have.status(401);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/admissions/my-application",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admissions",
+            "my-application"
+          ]
+        }
+      }
+    }
+  ]
+}
