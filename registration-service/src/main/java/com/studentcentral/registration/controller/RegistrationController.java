@@ -126,4 +126,15 @@ public class RegistrationController {
         List<RegistrationResponse> responses = registrationService.getRegistrationsByStudentId(studentId);
         return ResponseEntity.ok(responses);
     }
+
+    /**
+     * Authenticated / Internal Service: Retrieve active course IDs for a student without circular validation.
+     */
+    @GetMapping("/student/{studentId}/active-course-ids")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<String>> getActiveCourseIdsByStudentId(@PathVariable String studentId) {
+        log.info("REST request to get active course IDs for student {}", studentId);
+        List<String> activeIds = registrationService.getActiveCourseIdsByStudentId(studentId);
+        return ResponseEntity.ok(activeIds);
+    }
 }

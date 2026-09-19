@@ -1,0 +1,720 @@
+{
+	"info": {
+		"_postman_id": "7b8194fa-9620-4e1b-b389-9a72fa321001",
+		"name": "Student Central - Phase 7: Schedule & Timetable Service",
+		"description": "Postman API Collection for Student Central Phase 7: Schedule Service and Timetable Conflict Management. Covers Admin Schedule CRUD, filtering, Student Timetable (/my), Course Timetable, service-to-service conflict detection, boundary and overlap tests, and full Registration pipeline conflict verification.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "directUrl",
+			"value": "http://localhost:8086",
+			"type": "string"
+		},
+		{
+			"key": "adminToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "studentToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "courseA_Id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "courseB_Id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "courseC_Id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "scheduleId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "studentId",
+			"value": "SC20260001",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "01. Auth: Login as Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"if (jsonData.token) {",
+							"    pm.collectionVariables.set('adminToken', jsonData.token);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"admin@campus.edu\",\n  \"password\": \"Admin@123456\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			}
+		},
+		{
+			"name": "02. Auth: Login as Student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"if (jsonData.token) {",
+							"    pm.collectionVariables.set('studentToken', jsonData.token);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"student@campus.edu\",\n  \"password\": \"Student@123456\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			}
+		},
+		{
+			"name": "03. Admin: Create Schedule for Course A (CS401 - Mon 10:00-11:00)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"if (jsonData.id) {",
+							"    pm.collectionVariables.set('scheduleId', jsonData.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"courseId\": \"{{courseA_Id}}\",\n  \"courseCode\": \"CS401\",\n  \"courseName\": \"Advanced Algorithms\",\n  \"section\": \"A\",\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"classroom\": \"CR-301\",\n  \"building\": \"CSE Block\",\n  \"faculty\": \"Dr. Rao\",\n  \"semester\": 5,\n  \"academicYear\": \"2026-27\",\n  \"scheduleType\": \"LECTURE\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules"
+					]
+				}
+			}
+		},
+		{
+			"name": "04. Admin: Create Schedule for Course B (CS501 - Mon 11:00-12:00 Non-Overlapping)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"courseId\": \"{{courseB_Id}}\",\n  \"courseCode\": \"CS501\",\n  \"courseName\": \"Machine Learning\",\n  \"section\": \"A\",\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"11:00\",\n  \"endTime\": \"12:00\",\n  \"classroom\": \"CR-302\",\n  \"building\": \"CSE Block\",\n  \"faculty\": \"Dr. Sharma\",\n  \"semester\": 5,\n  \"academicYear\": \"2026-27\",\n  \"scheduleType\": \"LECTURE\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules"
+					]
+				}
+			}
+		},
+		{
+			"name": "05. Admin: Create Schedule for Course C (CS502 - Mon 10:30-11:30 Overlapping)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"courseId\": \"{{courseC_Id}}\",\n  \"courseCode\": \"CS502\",\n  \"courseName\": \"Cloud Computing\",\n  \"section\": \"A\",\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"10:30\",\n  \"endTime\": \"11:30\",\n  \"classroom\": \"CR-303\",\n  \"building\": \"CSE Block\",\n  \"faculty\": \"Dr. Patel\",\n  \"semester\": 5,\n  \"academicYear\": \"2026-27\",\n  \"scheduleType\": \"LECTURE\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules"
+					]
+				}
+			}
+		},
+		{
+			"name": "06. Admin: Get Schedule by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules/{{scheduleId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules",
+						"{{scheduleId}}"
+					]
+				}
+			}
+		},
+		{
+			"name": "07. Admin: Update Schedule (Change Classroom)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"classroom\": \"CR-305\",\n  \"building\": \"CSE Block West\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules/{{scheduleId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules",
+						"{{scheduleId}}"
+					]
+				}
+			}
+		},
+		{
+			"name": "08. Admin / Student: List All Schedules",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules"
+					]
+				}
+			}
+		},
+		{
+			"name": "09. Filter Schedules by Day of Week",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules?dayOfWeek=MONDAY",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules"
+					],
+					"query": [
+						{
+							"key": "dayOfWeek",
+							"value": "MONDAY"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "10. Filter Schedules by Semester & Classroom",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules?semester=5&classroom=CR-305",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules"
+					],
+					"query": [
+						{
+							"key": "semester",
+							"value": "5"
+						},
+						{
+							"key": "classroom",
+							"value": "CR-305"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "11. Student: Get Course Schedule",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules/course/CS401",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules",
+						"course",
+						"CS401"
+					]
+				}
+			}
+		},
+		{
+			"name": "12. Student: Get Own Timetable",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules/my",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules",
+						"my"
+					]
+				}
+			}
+		},
+		{
+			"name": "13. Internal Service: Check Schedule Conflict (POST)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"courseId\": \"{{courseC_Id}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules/check-conflict",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules",
+						"check-conflict"
+					]
+				}
+			}
+		},
+		{
+			"name": "14. Negative: Reject Invalid Time Range (startTime >= endTime)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"courseId\": \"{{courseA_Id}}\",\n  \"section\": \"A\",\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"11:00\",\n  \"endTime\": \"10:00\",\n  \"classroom\": \"CR-301\",\n  \"academicYear\": \"2026-27\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules"
+					]
+				}
+			}
+		},
+		{
+			"name": "15. Negative: Reject Non-Existent Course",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"courseId\": \"non-existent-course-id\",\n  \"section\": \"A\",\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"classroom\": \"CR-301\",\n  \"academicYear\": \"2026-27\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules"
+					]
+				}
+			}
+		},
+		{
+			"name": "16. Negative: Reject Classroom Conflict (Double Booking)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"courseId\": \"{{courseB_Id}}\",\n  \"section\": \"B\",\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"10:15\",\n  \"endTime\": \"10:45\",\n  \"classroom\": \"CR-305\",\n  \"academicYear\": \"2026-27\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules"
+					]
+				}
+			}
+		},
+		{
+			"name": "17. Negative: Reject Faculty Conflict",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"courseId\": \"{{courseB_Id}}\",\n  \"section\": \"B\",\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"11:00\",\n  \"classroom\": \"CR-401\",\n  \"faculty\": \"Dr. Rao\",\n  \"academicYear\": \"2026-27\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules"
+					]
+				}
+			}
+		},
+		{
+			"name": "18. Negative: Student Forbidden from Modifying Schedule",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"courseId\": \"{{courseA_Id}}\",\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"14:00\",\n  \"endTime\": \"15:00\",\n  \"classroom\": \"CR-101\",\n  \"academicYear\": \"2026-27\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules"
+					]
+				}
+			}
+		},
+		{
+			"name": "19. Integration: Student Registers Course A (CS401 - Success)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"courseId\": \"{{courseA_Id}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/registrations",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"registrations"
+					]
+				}
+			}
+		},
+		{
+			"name": "20. Integration: Student Registers Course B (CS501 - Non-Conflicting Success)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"courseId\": \"{{courseB_Id}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/registrations",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"registrations"
+					]
+				}
+			}
+		},
+		{
+			"name": "21. Integration: Student Attempts Course C (CS502 - Timetable Conflict Rejected)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"courseId\": \"{{courseC_Id}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/registrations",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"registrations"
+					]
+				}
+			}
+		},
+		{
+			"name": "22. Admin: Delete Schedule by ID",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/schedules/{{scheduleId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"schedules",
+						"{{scheduleId}}"
+					]
+				}
+			}
+		}
+	]
+}

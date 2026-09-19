@@ -93,7 +93,7 @@ class RegistrationServiceTest {
         when(registrationRepository.existsByStudentIdAndCourseCodeIgnoreCaseAndStatus("SC20260001", "CS501", RegistrationStatus.REGISTERED)).thenReturn(false);
         when(registrationRepository.findByStudentIdAndSemesterAndStatus("SC20260001", 5, RegistrationStatus.REGISTERED)).thenReturn(List.of());
         when(courseServiceClient.getAvailability(eq("c-ml-1"), any())).thenReturn(Optional.of(availableSeatsDto));
-        when(scheduleValidationClient.hasScheduleConflict("SC20260001", "c-ml-1", 5)).thenReturn(false);
+        when(scheduleValidationClient.checkScheduleConflict(eq("SC20260001"), eq("c-ml-1"), eq(5), any())).thenReturn(new ScheduleConflictResult(false, null));
         when(courseServiceClient.reserveSeat(eq("c-ml-1"), any())).thenReturn(true);
         when(registrationIdGenerator.generateRegistrationId(anyInt())).thenReturn("SC-REG-2026-00001");
         when(registrationRepository.save(any(Registration.class))).thenAnswer(i -> i.getArgument(0));
@@ -196,7 +196,7 @@ class RegistrationServiceTest {
         when(registrationRepository.existsByStudentIdAndCourseCodeIgnoreCaseAndStatus("SC20260001", "CS501", RegistrationStatus.REGISTERED)).thenReturn(false);
         when(registrationRepository.findByStudentIdAndSemesterAndStatus("SC20260001", 5, RegistrationStatus.REGISTERED)).thenReturn(List.of());
         when(courseServiceClient.getAvailability(eq("c-ml-1"), any())).thenReturn(Optional.of(availableSeatsDto));
-        when(scheduleValidationClient.hasScheduleConflict("SC20260001", "c-ml-1", 5)).thenReturn(false);
+        when(scheduleValidationClient.checkScheduleConflict(eq("SC20260001"), eq("c-ml-1"), eq(5), any())).thenReturn(new ScheduleConflictResult(false, null));
         when(courseServiceClient.reserveSeat(eq("c-ml-1"), any())).thenReturn(true);
         when(registrationIdGenerator.generateRegistrationId(anyInt())).thenReturn("SC-REG-2026-00001");
         when(registrationRepository.save(any(Registration.class))).thenAnswer(i -> i.getArgument(0));
@@ -205,6 +205,29 @@ class RegistrationServiceTest {
 
         assertNotNull(response);
         assertTrue(response.isSuccess());
+    }
+
+    @Test
+    void shouldRejectWhenScheduleConflictIsDetected() {
+        CreateRegistrationRequest request = new CreateRegistrationRequest("CS501");
+
+        when(studentServiceClient.getStudentProfile(eq("user-101"), any())).thenReturn(Optional.of(eligibleStudent));
+        when(courseServiceClient.getCourse(eq("CS501"), any())).thenReturn(Optional.of(activeCourseML));
+        when(registrationRepository.existsByStudentIdAndCourseIdAndStatus("SC20260001", "c-ml-1", RegistrationStatus.REGISTERED)).thenReturn(false);
+        when(registrationRepository.existsByStudentIdAndCourseCodeIgnoreCaseAndStatus("SC20260001", "CS501", RegistrationStatus.REGISTERED)).thenReturn(false);
+        when(registrationRepository.findByStudentIdAndSemesterAndStatus("SC20260001", 5, RegistrationStatus.REGISTERED)).thenReturn(List.of());
+        when(courseServiceClient.getAvailability(eq("c-ml-1"), any())).thenReturn(Optional.of(availableSeatsDto));
+
+        ConflictingCourseDto conflictingCourse = new ConflictingCourseDto(
+                "c-db-1", "CS402", "Database Systems", "MONDAY", "10:00", "11:00");
+        when(scheduleValidationClient.checkScheduleConflict(eq("SC20260001"), eq("c-ml-1"), eq(5), any()))
+                .thenReturn(new ScheduleConflictResult(true, conflictingCourse));
+
+        ScheduleConflictException ex = assertThrows(ScheduleConflictException.class, () ->
+                registrationService.registerCourse(studentUser, request));
+
+        assertTrue(ex.getMessage().contains("The selected course conflicts with CS402 on Monday from 10:00 to 11:00"));
+        verify(courseServiceClient, never()).reserveSeat(anyString(), anyString());
     }
 
     @Test
@@ -254,7 +277,7 @@ class RegistrationServiceTest {
         when(registrationRepository.existsByStudentIdAndCourseCodeIgnoreCaseAndStatus("SC20260001", "CS501", RegistrationStatus.REGISTERED)).thenReturn(false);
         when(registrationRepository.findByStudentIdAndSemesterAndStatus("SC20260001", 5, RegistrationStatus.REGISTERED)).thenReturn(List.of());
         when(courseServiceClient.getAvailability(eq("c-ml-1"), any())).thenReturn(Optional.of(availableSeatsDto));
-        when(scheduleValidationClient.hasScheduleConflict("SC20260001", "c-ml-1", 5)).thenReturn(false);
+        when(scheduleValidationClient.checkScheduleConflict(eq("SC20260001"), eq("c-ml-1"), eq(5), any())).thenReturn(new ScheduleConflictResult(false, null));
         when(courseServiceClient.reserveSeat(eq("c-ml-1"), any())).thenReturn(true);
         when(registrationIdGenerator.generateRegistrationId(anyInt())).thenReturn("SC-REG-2026-00001");
         when(registrationRepository.save(any(Registration.class))).thenThrow(new RuntimeException("DB down"));
@@ -315,5 +338,22 @@ class RegistrationServiceTest {
 
         assertEquals(1, response.getRegistrations().size());
         assertEquals("CS501", response.getRegistrations().get(0).getCourseCode());
+    }
+
+    @Test
+    void shouldGetActiveCourseIdsForStudent() {
+        Registration regActive1 = new Registration("SC-REG-2026-00001", "SC20260001", "user-101", "c-ml-1", "CS501", "ML", 5, "2026-27", 4);
+        regActive1.setStatus(RegistrationStatus.REGISTERED);
+        Registration regActive2 = new Registration("SC-REG-2026-00002", "SC20260001", "user-101", "c-db-1", "CS402", "DB", 5, "2026-27", 4);
+        regActive2.setStatus(RegistrationStatus.REGISTERED);
+
+        when(registrationRepository.findByStudentIdAndStatus("SC20260001", RegistrationStatus.REGISTERED))
+                .thenReturn(List.of(regActive1, regActive2));
+
+        List<String> courseIds = registrationService.getActiveCourseIdsByStudentId("SC20260001");
+
+        assertEquals(2, courseIds.size());
+        assertTrue(courseIds.contains("c-ml-1"));
+        assertTrue(courseIds.contains("c-db-1"));
     }
 }

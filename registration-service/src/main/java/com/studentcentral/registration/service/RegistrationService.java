@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.Year;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -142,9 +143,23 @@ public class RegistrationService {
         }
 
         // 8. Timetable Conflict Check
-        if (scheduleValidationClient.hasScheduleConflict(studentId, course.getId(), targetSemester)) {
-            log.warn("Registration rejected: Schedule conflict for student '{}', course '{}'", studentId, course.getCourseCode());
-            throw new ScheduleConflictException("Schedule conflict detected for course " + course.getCourseCode());
+        ScheduleConflictResult conflictResult = scheduleValidationClient.checkScheduleConflict(
+                studentId, course.getId(), targetSemester, user.getToken());
+        if (conflictResult.isConflict()) {
+            ConflictingCourseDto conflict = conflictResult.getConflictingCourse();
+            String detail;
+            if (conflict != null && conflict.getCourseCode() != null) {
+                detail = String.format("The selected course conflicts with %s on %s from %s to %s",
+                        conflict.getCourseCode(),
+                        capitalize(conflict.getDayOfWeek()),
+                        conflict.getStartTime(),
+                        conflict.getEndTime());
+            } else {
+                detail = "The selected course conflicts with an already registered course in your schedule";
+            }
+            log.warn("Registration rejected: Schedule conflict for student '{}', course '{}': {}",
+                    studentId, course.getCourseCode(), detail);
+            throw new ScheduleConflictException(detail);
         }
 
         // 9. Atomic Seat Reservation
@@ -289,6 +304,23 @@ public class RegistrationService {
         return registrations.stream()
                 .map(RegistrationResponse::fromModel)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieves active registered course IDs for a student without invoking schedule validation (preventing circular loops).
+     */
+    public List<String> getActiveCourseIdsByStudentId(String studentId) {
+        List<Registration> active = registrationRepository.findByStudentIdAndStatus(studentId, RegistrationStatus.REGISTERED);
+        return active.stream()
+                .map(Registration::getCourseId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private String capitalize(String str) {
+        if (str == null || str.isBlank()) return "";
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
     // ==========================================

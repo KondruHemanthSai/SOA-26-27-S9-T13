@@ -288,3 +288,38 @@ When a student registers for a course (`POST /api/registrations`), the service v
 A complete Postman test collection is provided in:
 `postman/Student_Central_Phase6_Collection.postman_collection.json`
 
+---
+
+## Phase 7 — Timetable Management & Schedule Conflict Service
+
+### Schedule Microservice (`schedule-service`)
+- **Port**: `8086`
+- **Database**: `student_central_schedule` (Collection: `schedules`)
+- **Authentication**: Stateless JWT security with role authorization (`STUDENT`, `ADMIN`)
+- **Compound & Single Indexes**: `courseId`, `dayOfWeek`, `semester`, `academicYear`, `classroom`, `faculty`
+
+### Conflict Detection Rules
+1. **Time Range Validity**: `startTime < endTime` (Rejects `startTime >= endTime` with `400 BAD REQUEST` / `INVALID_TIME_RANGE`).
+2. **Course Schedule Overlap**: Prevents same course and section from overlapping on the same day (`409 CONFLICT` / `SCHEDULE_CONFLICT`).
+3. **Classroom Conflict**: Prevents duplicate booking of the same classroom on the same day/time (`409 CONFLICT` / `CLASSROOM_CONFLICT`).
+4. **Faculty Conflict**: Prevents assigning the same faculty member to multiple concurrent classes (`409 CONFLICT` / `FACULTY_SCHEDULE_CONFLICT`).
+5. **Student Timetable Conflict**: Evaluates student's active enrollments against requested course slots via `POST /api/schedules/check-conflict` (`409 CONFLICT` / `SCHEDULE_CONFLICT`).
+
+### Schedule Endpoints
+
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `POST` | `/api/schedules` | ADMIN | Create new timetable schedule slot |
+| `GET` | `/api/schedules/{id}` | Authenticated | Retrieve timetable slot by ID |
+| `PUT` | `/api/schedules/{id}` | ADMIN | Update timetable schedule slot |
+| `DELETE` | `/api/schedules/{id}` | ADMIN | Delete timetable schedule slot |
+| `GET` | `/api/schedules` | Authenticated | List / filter timetable entries (`dayOfWeek`, `courseId`, `semester`, `academicYear`, `classroom`, `faculty`) |
+| `GET` | `/api/schedules/course/{courseId}` | Authenticated | Get weekly timetable for a specific course |
+| `GET` | `/api/schedules/my` | STUDENT | Retrieve personalized timetable from active course registrations |
+| `POST` | `/api/schedules/check-conflict` | Authenticated / Service | Service-to-service student timetable conflict check |
+
+### Phase 7 Postman Test Suite
+A complete Postman test collection is provided in:
+`postman/Student_Central_Phase7_Collection.postman_collection.json`
+
+
