@@ -1,0 +1,545 @@
+{
+	"info": {
+		"_postman_id": "8a9123fa-4321-4f1b-b492-9b81fa321008",
+		"name": "Student Central - Phase 8: Notification Service",
+		"description": "Postman API Collection for Student Central Phase 8: Notification Service. Covers In-App notifications, student notification feeds (paginated & unread), read/unread management, bulk read-all, individual deletion, admin direct notification creation, admin broadcast notifications, internal service-to-service alerts, and RBAC / security validation.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "directUrl",
+			"value": "http://localhost:8087",
+			"type": "string"
+		},
+		{
+			"key": "adminToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "studentToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "studentUserId",
+			"value": "user-101",
+			"type": "string"
+		},
+		{
+			"key": "notificationId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "01. Service Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications/health",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "notifications", "health"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test('Health status is UP', function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql('UP');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "02. Auth: Login as Admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"admin@campus.local\",\n    \"password\": \"Admin@123\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/login",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "auth", "login"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Admin login successful', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    var token = jsonData.token || (jsonData.data && jsonData.data.token);",
+							"    pm.collectionVariables.set('adminToken', token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "03. Auth: Login as Student",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"student@campus.local\",\n    \"password\": \"Student@123\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/login",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "auth", "login"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Student login successful', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    var token = jsonData.token || (jsonData.data && jsonData.data.token);",
+							"    pm.collectionVariables.set('studentToken', token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "04. Admin: Create Direct Notification",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": \"{{studentUserId}}\",\n    \"title\": \"Admission Verification Notice\",\n    \"message\": \"Your submitted identity documents have been verified by the Admission Office.\",\n    \"type\": \"ADMISSION\",\n    \"priority\": \"HIGH\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "notifications"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Notification created with 201', function () {",
+							"    pm.response.to.have.status(201);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data.notificationId).to.exist;",
+							"    pm.collectionVariables.set('notificationId', jsonData.data.notificationId);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "05. Admin: Broadcast Announcement",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userIds\": [\"{{studentUserId}}\", \"user-102\", \"user-103\"],\n    \"title\": \"Spring Semester Registration Opening\",\n    \"message\": \"Course registration portal opens tomorrow at 09:00 AM.\",\n    \"type\": \"ANNOUNCEMENT\",\n    \"priority\": \"NORMAL\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications/broadcast",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "notifications", "broadcast"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Broadcast sent with 201', function () {",
+							"    pm.response.to.have.status(201);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data).to.be.an('array');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "06. Student: Get My Notifications (Paginated)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications/my?page=0&size=10",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "notifications", "my"],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    pm.expect(jsonData.data.content).to.be.an('array');",
+							"    pm.expect(jsonData.data.pageSize).to.eql(10);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "07. Student: Get My Unread Notifications",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications/my/unread",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "notifications", "my", "unread"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status is 200 and items unread', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"    jsonData.data.forEach(function(item) {",
+							"        pm.expect(item.read).to.be.false;",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "08. Student: Get Unread Count",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications/my/unread-count",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "notifications", "my", "unread-count"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Unread count is greater than zero', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.unreadCount).to.be.at.least(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "09. Student: Mark Notification as Read",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications/{{notificationId}}/read",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "notifications", "{{notificationId}}", "read"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Notification marked as read', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.read).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "10. Student: Mark All Notifications as Read",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications/my/read-all",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "notifications", "my", "read-all"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('All notifications marked read', function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "11. Student: Delete Notification",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications/{{notificationId}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "notifications", "{{notificationId}}"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Notification deleted with 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "12. Security: Student Forbidden from Admin Create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{studentToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": \"user-102\",\n    \"title\": \"Unauthorized Direct Alert\",\n    \"message\": \"Student should not be able to trigger this.\",\n    \"type\": \"SYSTEM\",\n    \"priority\": \"NORMAL\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "notifications"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Student receives 403 Forbidden', function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "13. Validation: Reject Notification with Missing Title",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": \"user-102\",\n    \"message\": \"Message without title\",\n    \"type\": \"SYSTEM\",\n    \"priority\": \"NORMAL\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "notifications"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Validation rejects with 400 Bad Request', function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "14. Internal: Microservice Alert Creation",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": \"{{studentUserId}}\",\n    \"title\": \"Course Registration Confirmed\",\n    \"message\": \"You have been registered for CS501 - Machine Learning.\",\n    \"type\": \"REGISTRATION\",\n    \"priority\": \"NORMAL\",\n    \"referenceType\": \"REGISTRATION\",\n    \"referenceId\": \"SC-REG-2026-00001\",\n    \"sourceService\": \"registration-service\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications/internal",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "notifications", "internal"]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Internal notification created with 201', function () {",
+							"    pm.response.to.have.status(201);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.notificationId).to.exist;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		}
+	]
+}

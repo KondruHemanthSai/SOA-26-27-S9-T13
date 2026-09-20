@@ -1,5 +1,6 @@
 package com.studentcentral.admission.service;
 
+import com.studentcentral.admission.client.NotificationServiceClient;
 import com.studentcentral.admission.client.StudentServiceClient;
 import com.studentcentral.admission.dto.*;
 import com.studentcentral.admission.exception.*;
@@ -25,15 +26,26 @@ public class AdmissionService {
     private final DocumentRepository documentRepository;
     private final ApplicationIdGenerator applicationIdGenerator;
     private final StudentServiceClient studentServiceClient;
+    private final NotificationServiceClient notificationServiceClient;
 
     public AdmissionService(AdmissionApplicationRepository applicationRepository,
                             DocumentRepository documentRepository,
                             ApplicationIdGenerator applicationIdGenerator,
                             StudentServiceClient studentServiceClient) {
+        this(applicationRepository, documentRepository, applicationIdGenerator, studentServiceClient, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public AdmissionService(AdmissionApplicationRepository applicationRepository,
+                            DocumentRepository documentRepository,
+                            ApplicationIdGenerator applicationIdGenerator,
+                            StudentServiceClient studentServiceClient,
+                            NotificationServiceClient notificationServiceClient) {
         this.applicationRepository = applicationRepository;
         this.documentRepository = documentRepository;
         this.applicationIdGenerator = applicationIdGenerator;
         this.studentServiceClient = studentServiceClient;
+        this.notificationServiceClient = notificationServiceClient;
     }
 
     /**
@@ -313,6 +325,32 @@ public class AdmissionService {
         log.info("Admission application {} transitioned from {} to {} by admin {}", saved.getApplicationId(), currentStatus, targetStatus, adminUserId);
 
         List<DocumentResponse> documents = getDocumentResponsesForApplication(saved.getApplicationId());
+
+        // Best-effort notification — failure does not affect the admission review
+        if (notificationServiceClient != null) {
+            try {
+                switch (targetStatus) {
+                    case APPROVED:
+                        notificationServiceClient.sendAdmissionApprovedNotification(
+                                saved.getUserId(), saved.getApplicationId());
+                        break;
+                    case REJECTED:
+                        notificationServiceClient.sendAdmissionRejectedNotification(
+                                saved.getUserId(), saved.getApplicationId());
+                        break;
+                    case CHANGES_REQUESTED:
+                        notificationServiceClient.sendAdmissionChangesRequestedNotification(
+                                saved.getUserId(), saved.getApplicationId());
+                        break;
+                    default:
+                        break;
+                }
+            } catch (Exception e) {
+                log.warn("Failed to send admission notification for applicationId={}: {}",
+                        saved.getApplicationId(), e.getMessage());
+            }
+        }
+
         return ApplicationResponse.fromModel(saved, documents);
     }
 

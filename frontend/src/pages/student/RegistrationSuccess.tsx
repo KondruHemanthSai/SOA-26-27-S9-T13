@@ -1,6 +1,11 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function RegistrationSuccess() {
+  const location = useLocation();
+  const state = location.state as { courseCode?: string; courseName?: string } | undefined;
+  const courseText = state?.courseName
+    ? `${state.courseCode ? state.courseCode + ' - ' : ''}${state.courseName}`
+    : 'Your selected course';
   return (
     <div className="bg-background text-on-background min-h-screen flex items-center justify-center p-margin-mobile md:p-margin-desktop relative overflow-hidden font-sans">
       {/* Animated Glassmorphism Background Blobs */}
@@ -30,7 +35,7 @@ export default function RegistrationSuccess() {
             Course registered successfully 🎉
           </h1>
           <p className="font-body-md text-body-md text-on-surface-variant mb-stack-lg px-4">
-            <span className="font-bold text-on-surface">CS501 - Machine Learning</span> has been added to your semester schedule.
+            <span className="font-bold text-on-surface">{courseText}</span> has been added to your semester schedule.
           </p>
 
           {/* Actions */}

@@ -54,6 +54,7 @@ public class JwtAuthenticationGatewayFilter implements GlobalFilter, Ordered {
             "/api/registrations/health",
             "/api/schedules/health",
             "/api/notifications/health",
+            "/api/ai/health",
             "/actuator/**"
     );
 

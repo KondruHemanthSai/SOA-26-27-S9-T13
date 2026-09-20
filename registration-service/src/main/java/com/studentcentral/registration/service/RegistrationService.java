@@ -2,6 +2,7 @@ package com.studentcentral.registration.service;
 
 import com.studentcentral.registration.client.AdmissionServiceClient;
 import com.studentcentral.registration.client.CourseServiceClient;
+import com.studentcentral.registration.client.NotificationServiceClient;
 import com.studentcentral.registration.client.ScheduleValidationClient;
 import com.studentcentral.registration.client.StudentServiceClient;
 import com.studentcentral.registration.client.dto.*;
@@ -33,10 +34,31 @@ public class RegistrationService {
     private final RegistrationIdGenerator registrationIdGenerator;
     private final StudentServiceClient studentServiceClient;
     private final AdmissionServiceClient admissionServiceClient;
+    private final NotificationServiceClient notificationServiceClient;
     private final CourseServiceClient courseServiceClient;
     private final ScheduleValidationClient scheduleValidationClient;
 
     private final int maxCreditsPerSemester;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public RegistrationService(
+            RegistrationRepository registrationRepository,
+            RegistrationIdGenerator registrationIdGenerator,
+            StudentServiceClient studentServiceClient,
+            AdmissionServiceClient admissionServiceClient,
+            CourseServiceClient courseServiceClient,
+            ScheduleValidationClient scheduleValidationClient,
+            NotificationServiceClient notificationServiceClient,
+            @Value("${registration.max-credits-per-semester:24}") int maxCreditsPerSemester) {
+        this.registrationRepository = registrationRepository;
+        this.registrationIdGenerator = registrationIdGenerator;
+        this.studentServiceClient = studentServiceClient;
+        this.admissionServiceClient = admissionServiceClient;
+        this.courseServiceClient = courseServiceClient;
+        this.scheduleValidationClient = scheduleValidationClient;
+        this.notificationServiceClient = notificationServiceClient;
+        this.maxCreditsPerSemester = maxCreditsPerSemester;
+    }
 
     public RegistrationService(
             RegistrationRepository registrationRepository,
@@ -45,14 +67,10 @@ public class RegistrationService {
             AdmissionServiceClient admissionServiceClient,
             CourseServiceClient courseServiceClient,
             ScheduleValidationClient scheduleValidationClient,
-            @Value("${registration.max-credits-per-semester:24}") int maxCreditsPerSemester) {
-        this.registrationRepository = registrationRepository;
-        this.registrationIdGenerator = registrationIdGenerator;
-        this.studentServiceClient = studentServiceClient;
-        this.admissionServiceClient = admissionServiceClient;
-        this.courseServiceClient = courseServiceClient;
-        this.scheduleValidationClient = scheduleValidationClient;
-        this.maxCreditsPerSemester = maxCreditsPerSemester;
+            int maxCreditsPerSemester) {
+        this(registrationRepository, registrationIdGenerator, studentServiceClient,
+             admissionServiceClient, courseServiceClient, scheduleValidationClient,
+             null, maxCreditsPerSemester);
     }
 
     /**
@@ -195,6 +213,17 @@ public class RegistrationService {
             throw e;
         }
 
+        // Best-effort notification — failure does not affect registration
+        if (notificationServiceClient != null) {
+            try {
+                notificationServiceClient.sendRegistrationNotification(
+                        user.getUserId(), course.getCourseCode(), course.getCourseName(),
+                        savedRegistration.getRegistrationId());
+            } catch (Exception e) {
+                log.warn("Failed to send registration notification for user {}: {}", user.getUserId(), e.getMessage());
+            }
+        }
+
         return new RegistrationSuccessResponse(
                 true,
                 "Course registered successfully",
@@ -224,6 +253,17 @@ public class RegistrationService {
 
         log.info("Registration '{}' marked as DROPPED. Releasing seat for course '{}'", registrationId, registration.getCourseId());
         courseServiceClient.releaseSeat(registration.getCourseId(), user.getToken());
+
+        // Best-effort notification — failure does not affect drop operation
+        if (notificationServiceClient != null) {
+            try {
+                notificationServiceClient.sendDropNotification(
+                        user.getUserId(), registration.getCourseCode(), registration.getCourseName(),
+                        registration.getRegistrationId());
+            } catch (Exception e) {
+                log.warn("Failed to send drop notification for user {}: {}", user.getUserId(), e.getMessage());
+            }
+        }
 
         return RegistrationResponse.fromModel(updated);
     }

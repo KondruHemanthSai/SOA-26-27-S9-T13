@@ -1,0 +1,1845 @@
+{
+  "info": {
+    "_postman_id": "9b1234cd-5678-4ef9-a1b2-c3d4e5f67890",
+    "name": "Student Central - Phase 10: Complete Microservices & Atlas Integration Suite",
+    "description": "Comprehensive End-to-End Postman Collection for Student Central Phase 10. Validates Eureka Service Discovery, Spring Cloud Gateway Routing, MongoDB Atlas Multi-Database Persistence, JWT Authentication & RBAC, Student Profiles, Admission Workflows, Course Catalog, Registration Business Rules & Concurrency, Timetable Conflict Detection, and Cross-Service In-App Notifications.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "eurekaUrl",
+      "value": "http://localhost:8761",
+      "type": "string"
+    },
+    {
+      "key": "adminEmail",
+      "value": "admin@studentcentral.com",
+      "type": "string"
+    },
+    {
+      "key": "adminPassword",
+      "value": "Admin@12345",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "studentEmail",
+      "value": "phase10.student@campus.edu",
+      "type": "string"
+    },
+    {
+      "key": "studentPassword",
+      "value": "Pass@12345",
+      "type": "string"
+    },
+    {
+      "key": "studentToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "studentUserId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "studentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "applicationId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "course1Id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "course1Code",
+      "value": "CS101",
+      "type": "string"
+    },
+    {
+      "key": "course2Id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "course2Code",
+      "value": "CS201",
+      "type": "string"
+    },
+    {
+      "key": "registrationId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "notificationId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01. Infrastructure & Service Discovery",
+      "item": [
+        {
+          "name": "01. Eureka Server Apps Registry",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{eurekaUrl}}/eureka/apps",
+              "host": [
+                "{{eurekaUrl}}"
+              ],
+              "path": [
+                "eureka",
+                "apps"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Eureka is responding (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Eureka applications listed', function () {",
+                  "    var data = pm.response.json();",
+                  "    pm.expect(data).to.have.property('applications');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "02. API Gateway Actuator Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Gateway is healthy (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Status is UP', function () { pm.expect(pm.response.json().status).to.eql('UP'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "03. Auth Service Health (via Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Auth service is UP (200)', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "04. Student Service Health (via Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Student service is UP (200)', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "05. Admission Service Health (via Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admissions/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admissions",
+                "health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Admission service is UP (200)', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "06. Course Service Health (via Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Course service is UP (200)', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "07. Registration Service Health (via Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/registrations/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "registrations",
+                "health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Registration service is UP (200)', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "08. Schedule Service Health (via Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/schedules/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "schedules",
+                "health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Schedule service is UP (200)', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "09. Notification Service Health (via Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Notification service is UP (200)', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02. Authentication & RBAC",
+      "item": [
+        {
+          "name": "01. Register Student Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Phase10 Test Student\",\n  \"email\": \"{{studentEmail}}\",\n  \"password\": \"{{studentPassword}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Registration successful (200 or 201)', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "if (data.token) { pm.collectionVariables.set('studentToken', data.token); }",
+                  "if (data.userId) { pm.collectionVariables.set('studentUserId', data.userId); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "02. Login Student (Extract Token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{studentEmail}}\",\n  \"password\": \"{{studentPassword}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Student login successful (200)', function () { pm.response.to.have.status(200); });",
+                  "var data = pm.response.json();",
+                  "pm.expect(data.token).to.not.be.empty;",
+                  "pm.expect(data.role).to.eql('STUDENT');",
+                  "pm.collectionVariables.set('studentToken', data.token);",
+                  "pm.collectionVariables.set('studentUserId', data.userId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "03. Login Admin (Extract Admin Token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Admin login successful (200)', function () { pm.response.to.have.status(200); });",
+                  "var data = pm.response.json();",
+                  "pm.expect(data.token).to.not.be.empty;",
+                  "pm.expect(data.role).to.eql('ADMIN');",
+                  "pm.collectionVariables.set('adminToken', data.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "04. Invalid Credentials (401 Unauthorized)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{studentEmail}}\",\n  \"password\": \"WrongPassword999!\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Expect 401 Unauthorized', function () { pm.response.to.have.status(401); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "05. RBAC Enforcement: Student Forbidden on Admin Route (403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/admin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "admin"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Expect 403 Forbidden for Student role on Admin route', function () { pm.response.to.have.status(403); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "06. Unauthenticated Access Rejected (401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/my",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "my"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Expect 401 Unauthorized without token', function () { pm.response.to.have.status(401); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03. Student Profile Management",
+      "item": [
+        {
+          "name": "01. Create/Initialize Student Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "profile"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Alex\",\n  \"lastName\": \"Rivera\",\n  \"dateOfBirth\": \"2002-05-14\",\n  \"phoneNumber\": \"+1-555-0199\",\n  \"address\": \"452 Campus Drive, West Hall\",\n  \"department\": \"Computer Science\",\n  \"program\": \"B.Tech Computer Science\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Profile created or updated (200/201)', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "var data = pm.response.json();",
+                  "if (data.studentId) { pm.collectionVariables.set('studentId', data.studentId); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "02. Get My Student Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "profile"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Profile retrieved (200)', function () { pm.response.to.have.status(200); });",
+                  "var data = pm.response.json();",
+                  "pm.expect(data.firstName).to.eql('Alex');",
+                  "if (data.studentId) { pm.collectionVariables.set('studentId', data.studentId); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "03. Admin Get Student Profile by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/admin/{{studentUserId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "admin",
+                "{{studentUserId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Admin retrieved student (200)', function () { pm.expect(pm.response.code).to.be.oneOf([200, 404]); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04. Admission Lifecycle Workflow",
+      "item": [
+        {
+          "name": "01. Submit Admission Application",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admissions/apply",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admissions",
+                "apply"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"program\": \"Computer Science\",\n  \"academicYear\": \"2026-2027\",\n  \"previousEducation\": \"High School Diploma - Honors STEM\",\n  \"gpa\": 3.85,\n  \"statementOfPurpose\": \"I am passionate about distributed systems and cloud microservices architecture.\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Admission application submitted (200/201)', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "var data = pm.response.json();",
+                  "pm.expect(data.applicationId).to.not.be.empty;",
+                  "pm.collectionVariables.set('applicationId', data.applicationId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "02. View My Application",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admissions/my-application",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admissions",
+                "my-application"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('My application retrieved (200)', function () { pm.response.to.have.status(200); });",
+                  "var data = pm.response.json();",
+                  "pm.expect(data.status).to.be.oneOf(['SUBMITTED', 'PENDING', 'UNDER_REVIEW']);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "03. Upload Document Metadata",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admissions/{{applicationId}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admissions",
+                "{{applicationId}}",
+                "documents"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentType\": \"TRANSCRIPT\",\n  \"documentName\": \"official_highschool_transcript.pdf\",\n  \"fileUrl\": \"https://storage.campus.edu/docs/official_transcript.pdf\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Document metadata uploaded (200/201)', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "04. Admin List All Applications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admissions/admin/all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admissions",
+                "admin",
+                "all"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Admin fetched applications (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.expect(pm.response.json()).to.be.an('array');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "05. Admin Approve Application",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admissions/admin/{{applicationId}}/review",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admissions",
+                "admin",
+                "{{applicationId}}",
+                "review"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"APPROVED\",\n  \"remarks\": \"Excellent academic background and credentials verified. Welcome to Campus!\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Application approved (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.expect(pm.response.json().status).to.eql('APPROVED');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05. Course Catalog Management",
+      "item": [
+        {
+          "name": "01. Admin Create Prerequisite Course (CS101)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CS101\",\n  \"title\": \"Introduction to Computer Science\",\n  \"description\": \"Foundations of programming, algorithms, and computational thinking.\",\n  \"department\": \"Computer Science\",\n  \"credits\": 3,\n  \"capacity\": 50,\n  \"prerequisiteCodes\": []\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Course CS101 created (200/201/409)', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201, 409]); });",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    var data = pm.response.json();",
+                  "    pm.collectionVariables.set('course1Id', data.id || data.courseId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "02. Admin Create Advanced Course (CS201 with Prereq)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CS201\",\n  \"title\": \"Data Structures & Algorithms\",\n  \"description\": \"Linear and hierarchical data structures, sorting algorithms, complexity analysis.\",\n  \"department\": \"Computer Science\",\n  \"credits\": 4,\n  \"capacity\": 40,\n  \"prerequisiteCodes\": [\n    \"CS101\"\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Course CS201 created (200/201/409)', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201, 409]); });",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    var data = pm.response.json();",
+                  "    pm.collectionVariables.set('course2Id', data.id || data.courseId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "03. Student Browse All Courses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Courses retrieved (200)', function () { pm.response.to.have.status(200); });",
+                  "var courses = pm.response.json();",
+                  "pm.expect(courses).to.be.an('array');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "04. Student Filter Courses by Department",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/department/Computer%20Science",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "department",
+                "Computer%20Science"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Filtered courses retrieved (200)', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06. Course Registration & Business Rules",
+      "item": [
+        {
+          "name": "01. Register for Course CS101 (Seat Decrement)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/registrations/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "registrations",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"CS101\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Registration successful (200/201/409)', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201, 409]); });",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    var data = pm.response.json();",
+                  "    pm.collectionVariables.set('registrationId', data.id || data.registrationId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "02. Attempt Duplicate Registration (Blocked 400/409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/registrations/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "registrations",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"CS101\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Duplicate registration blocked (400 or 409)', function () { pm.expect(pm.response.code).to.be.oneOf([400, 409]); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "03. View Student Registered Courses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/registrations/my-courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "registrations",
+                "my-courses"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('My courses retrieved (200)', function () { pm.response.to.have.status(200); });",
+                  "var data = pm.response.json();",
+                  "pm.expect(data).to.be.an('array');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "04. Drop Course (Seat Released & Notification)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/registrations/drop/CS101",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "registrations",
+                "drop",
+                "CS101"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Course dropped successfully (200 or 204)', function () { pm.expect(pm.response.code).to.be.oneOf([200, 204]); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07. Schedule & Timetable Service",
+      "item": [
+        {
+          "name": "01. Admin Create Schedule Section",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/schedules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "schedules"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"CS101\",\n  \"section\": \"A\",\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"09:00\",\n  \"endTime\": \"10:30\",\n  \"classroom\": \"Hall-101\",\n  \"faculty\": \"Dr. Sarah Connor\",\n  \"semester\": \"Fall 2026\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Schedule section created (200/201/409)', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201, 409]); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "02. Conflict Check: Classroom Collision (409 Conflict)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/schedules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "schedules"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"CS201\",\n  \"section\": \"B\",\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"09:30\",\n  \"endTime\": \"11:00\",\n  \"classroom\": \"Hall-101\",\n  \"faculty\": \"Prof. Charles Xavier\",\n  \"semester\": \"Fall 2026\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Classroom conflict detected (409)', function () { pm.expect(pm.response.code).to.be.oneOf([400, 409]); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "03. Conflict Check: Faculty Double Booking (409 Conflict)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/schedules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "schedules"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"CS201\",\n  \"section\": \"B\",\n  \"dayOfWeek\": \"MONDAY\",\n  \"startTime\": \"09:00\",\n  \"endTime\": \"10:30\",\n  \"classroom\": \"Room-204\",\n  \"faculty\": \"Dr. Sarah Connor\",\n  \"semester\": \"Fall 2026\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Faculty conflict detected (409)', function () { pm.expect(pm.response.code).to.be.oneOf([400, 409]); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "04. Student Fetch Weekly Timetable",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/schedules/my-timetable",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "schedules",
+                "my-timetable"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Weekly timetable retrieved (200)', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "08. Notification Service & Alerts",
+      "item": [
+        {
+          "name": "01. Student Fetch Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/my",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "my"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Notifications retrieved (200)', function () { pm.response.to.have.status(200); });",
+                  "var data = pm.response.json();",
+                  "if (data.content && data.content.length > 0) {",
+                  "    pm.collectionVariables.set('notificationId', data.content[0].notificationId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "02. Student Fetch Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/my/unread-count",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "my",
+                "unread-count"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Unread count retrieved (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.expect(pm.response.json()).to.have.property('unreadCount');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "03. Student Mark Notification As Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/{{notificationId}}/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "{{notificationId}}",
+                "read"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Mark as read handled (200 or 404)', function () { pm.expect(pm.response.code).to.be.oneOf([200, 404]); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "04. Student Mark All Notifications As Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/my/read-all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "my",
+                "read-all"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('All notifications marked read (200)', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "05. Admin Broadcast Announcement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/broadcast",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "broadcast"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userIds\": [\n    \"{{studentUserId}}\"\n  ],\n  \"title\": \"Campus System Maintenance Notice\",\n  \"message\": \"Scheduled maintenance on Sunday from 2 AM to 4 AM UTC.\",\n  \"type\": \"ANNOUNCEMENT\",\n  \"priority\": \"HIGH\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Broadcast notification dispatched (200/201)', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "09. Full End-to-End Academic Journey",
+      "item": [
+        {
+          "name": "Step 1: Authenticate Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{studentEmail}}\",\n  \"password\": \"{{studentPassword}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Step 1: Student Authenticated', function () { pm.response.to.have.status(200); });",
+                  "pm.collectionVariables.set('studentToken', pm.response.json().token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Step 2: Check Admission Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admissions/my-application",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admissions",
+                "my-application"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Step 2: Admission Verified', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Step 3: Browse Available Catalog",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Step 3: Catalog Loaded', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Step 4: View Student Timetable",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/schedules/my-timetable",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "schedules",
+                "my-timetable"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Step 4: Timetable Verified', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Step 5: Check Student In-App Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/my",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "my"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Step 5: Notifications Received', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

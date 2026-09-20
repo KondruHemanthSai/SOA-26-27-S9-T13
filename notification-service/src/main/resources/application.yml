@@ -6,7 +6,7 @@ spring:
     name: notification-service
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/student_central_notification}
+      uri: ${MONGODB_NOTIFICATION_URI:${MONGODB_URI:${MONGODB_BASE_URI:mongodb://localhost:27017}/student_central_notification${MONGODB_URI_OPTIONS:}}}
 
 eureka:
   client:
@@ -25,6 +25,13 @@ management:
   endpoint:
     health:
       show-details: always
+
+jwt:
+  secret: ${JWT_SECRET:studentCentralSuperSecretJwtKeyWithSufficientLengthForHS256Security2024!}
+
+notification:
+  default-page-size: 20
+  max-page-size: 100
 
 logging:
   level:

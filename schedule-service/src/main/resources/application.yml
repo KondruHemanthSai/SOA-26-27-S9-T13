@@ -6,7 +6,7 @@ spring:
     name: schedule-service
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/student_central_schedule}
+      uri: ${MONGODB_SCHEDULE_URI:${MONGODB_URI:${MONGODB_BASE_URI:mongodb://localhost:27017}/student_central_schedule${MONGODB_URI_OPTIONS:}}}
 
 eureka:
   client:

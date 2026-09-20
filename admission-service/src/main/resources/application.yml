@@ -6,7 +6,7 @@ spring:
     name: admission-service
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/student_central_admission}
+      uri: ${MONGODB_ADMISSION_URI:${MONGODB_URI:${MONGODB_BASE_URI:mongodb://localhost:27017}/student_central_admission${MONGODB_URI_OPTIONS:}}}
 
 eureka:
   client:

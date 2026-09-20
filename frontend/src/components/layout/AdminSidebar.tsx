@@ -3,8 +3,10 @@ import { useAuth } from '../../context/AuthContext';
 
 const navItems = [
   { path: '/admin/dashboard', icon: 'dashboard', label: 'Overview' },
-  { path: '/admin/admissions', icon: 'description', label: 'Applications' },
+  { path: '/admin/admissions', icon: 'description', label: 'Admissions' },
   { path: '/admin/courses', icon: 'school', label: 'Courses' },
+  { path: '/admin/schedules', icon: 'calendar_month', label: 'Schedules' },
+  { path: '/admin/notifications', icon: 'campaign', label: 'Notifications' },
 ];
 
 export default function AdminSidebar() {
@@ -14,7 +16,7 @@ export default function AdminSidebar() {
   return (
     <aside className="hidden md:flex flex-col fixed left-0 top-0 h-full w-64 z-50 bg-surface-container-low/40 backdrop-blur-2xl border-r border-primary/5 shadow-2xl p-4 gap-2">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-[32px] px-2 pt-2">
+      <div className="flex items-center gap-4 mb-[24px] px-2 pt-2">
         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
           <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>admin_panel_settings</span>
         </div>
@@ -25,15 +27,18 @@ export default function AdminSidebar() {
       </div>
 
       {/* CTA Button */}
-      <button className="w-full bg-primary text-on-primary hover:opacity-90 transition-opacity rounded-lg py-3 px-4 font-semibold flex items-center justify-center gap-2 shadow-sm mb-[16px] font-label-md text-label-md">
+      <Link
+        to="/admin/courses/new"
+        className="w-full bg-primary text-on-primary hover:opacity-90 transition-opacity rounded-lg py-3 px-4 font-semibold flex items-center justify-center gap-2 shadow-sm mb-[16px] font-label-md text-label-md"
+      >
         <span className="material-symbols-outlined text-[18px]">add</span>
-        New Application
-      </button>
+        New Course
+      </Link>
 
       {/* Navigation */}
       <nav className="flex-1 flex flex-col gap-1 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+          const isActive = location.pathname === item.path || (item.path !== '/admin/dashboard' && location.pathname.startsWith(item.path));
           return (
             <Link
               key={item.path}
@@ -53,10 +58,6 @@ export default function AdminSidebar() {
 
       {/* Footer */}
       <div className="mt-auto pt-4 border-t border-primary/5 flex flex-col gap-1">
-        <a className="flex items-center gap-3 text-on-secondary-container px-4 py-3 hover:bg-surface-container-high transition-all hover:translate-x-1 rounded-lg font-label-md text-label-md" href="#">
-          <span className="material-symbols-outlined">help_outline</span>
-          Support
-        </a>
         <button
           onClick={logout}
           className="flex items-center gap-3 text-on-secondary-container px-4 py-3 hover:bg-surface-container-high transition-all hover:translate-x-1 rounded-lg font-label-md text-label-md w-full text-left"

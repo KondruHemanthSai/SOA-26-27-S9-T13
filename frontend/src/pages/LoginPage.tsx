@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { authApi, getErrorMessage } from '../services/api';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,19 +18,24 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // TODO: Wire to Auth Service in Phase 2
-      // For now, simulate login
-      const mockUser = {
-        id: '1',
-        email,
-        firstName: 'Hemanth',
-        lastName: 'M.',
-        role: email.includes('admin') ? 'ADMIN' as const : 'STUDENT' as const,
+      const response = await authApi.login({ email, password });
+      const user = {
+        id: response.userId,
+        name: response.name,
+        email: response.email,
+        role: response.role,
       };
-      login('mock-jwt-token', mockUser);
-      navigate(mockUser.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard');
-    } catch {
-      setError('Invalid email or password');
+      login(response.token, user);
+
+      // Check if user was trying to access a protected location
+      const origin = (location.state as { from?: { pathname: string } })?.from?.pathname;
+      if (origin && origin !== '/login' && origin !== '/register') {
+        navigate(origin);
+      } else {
+        navigate(response.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard');
+      }
+    } catch (err) {
+      setError(getErrorMessage(err, 'Invalid email or password. Please try again.'));
     } finally {
       setLoading(false);
     }

@@ -74,13 +74,17 @@ Communication Flow:
 
 ---
 
-## Local Setup
+## Local Setup & Configuration
 
-### 1. Start MongoDB
-Ensure MongoDB is running locally on port 27017:
+### 1. Configure MongoDB Atlas & Environment
+Student Central connects to MongoDB Atlas using database-per-service isolation.
+Copy `.env.example` to `.env` and supply your Atlas credentials:
 ```bash
-# Default connection string: mongodb://localhost:27017
+cp .env.example .env
 ```
+For detailed setup instructions, see:
+- [MongoDB Atlas Setup Guide](docs/mongodb-setup.md)
+- [Postman API Testing Guide](docs/postman-testing.md)
 
 ### 2. Start Eureka Server
 ```bash
@@ -90,7 +94,7 @@ mvn spring-boot:run
 *Access dashboard at: `http://localhost:8761`*
 
 ### 3. Start Business Microservices
-Start each service in a separate terminal:
+Start each service in a separate terminal (all will connect to their respective MongoDB Atlas database):
 ```bash
 cd auth-service && mvn spring-boot:run
 cd student-service && mvn spring-boot:run
@@ -106,12 +110,14 @@ cd notification-service && mvn spring-boot:run
 cd api-gateway
 mvn spring-boot:run
 ```
+*All client requests route through: `http://localhost:8080`*
 
 ### 5. Start Frontend
 ```bash
 cd frontend
 npm run dev
 ```
+*Access the React application at: `http://localhost:5173`*
 
 ---
 
@@ -321,5 +327,84 @@ A complete Postman test collection is provided in:
 ### Phase 7 Postman Test Suite
 A complete Postman test collection is provided in:
 `postman/Student_Central_Phase7_Collection.postman_collection.json`
+
+---
+
+## Phase 8: Notification Service (Port 8087)
+
+The **Notification Service** provides decoupled, resilient, in-app event notifications and administrative announcements across the microservice ecosystem.
+
+### Core Features
+- **In-App Notification Feed**: Students can fetch paginated feeds of their notifications, filter unread alerts, and monitor unread counts with badge support.
+- **Read & Retention Lifecycle**: Individual notification mark-as-read, bulk mark-all-read, and individual deletion with strict user ownership enforcement.
+- **Admin Communications**: Direct targeted notifications to single users, and broadcast announcements to multiple students simultaneously.
+- **Internal Service Integrations**: Best-effort REST client integration with:
+  - **Admission Service**: Event alerts when applications are `APPROVED`, `REJECTED`, or `CHANGES_REQUESTED`.
+  - **Registration Service**: Event alerts when courses are `REGISTERED` or `DROPPED`.
+- **Fault Tolerance**: Microservice interactions are strictly best-effort — if the Notification Service is temporarily degraded, registration and admission flows never fail.
+- **Data Model**: MongoDB document store with compound indexes (`userId` + `createdAt DESC`, `userId` + `isRead`) and unique `notificationId` (`NOTIF-<8-hex>`).
+
+### Notification Endpoints
+
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/api/notifications/health` | Public | Service health probe |
+| `GET` | `/api/notifications/my` | STUDENT | Get student's notifications (paginated, sorted by `createdAt DESC`) |
+| `GET` | `/api/notifications/my/unread` | STUDENT | Get student's unread notifications |
+| `GET` | `/api/notifications/my/unread-count` | STUDENT | Get total unread count for badge display |
+| `PUT` | `/api/notifications/{id}/read` | STUDENT | Mark specific notification as read (ownership verified) |
+| `PUT` | `/api/notifications/my/read-all` | STUDENT | Mark all student's notifications as read in bulk |
+| `DELETE` | `/api/notifications/{id}` | STUDENT | Delete specific notification (ownership verified) |
+| `POST` | `/api/notifications` | ADMIN | Create a direct notification for a specific user |
+| `POST` | `/api/notifications/broadcast` | ADMIN | Broadcast notification to multiple users |
+| `POST` | `/api/notifications/internal` | Service / Internal | Internal service-to-service notification creation |
+
+### Phase 8 Postman Test Suite
+A complete Postman test collection is provided in:
+`postman/Student_Central_Phase8_Collection.postman_collection.json`
+
+---
+
+## Phase 9: Frontend & Microservices Integration
+
+Phase 9 integrates the pre-existing **Google Stitch React Frontend** (`frontend/`) with the Spring Boot microservices ecosystem via the **Spring Cloud API Gateway** (`http://localhost:8080`).
+
+### Architectural Highlights
+- **Single Point of Ingress**: The frontend exclusively communicates with the API Gateway (`http://localhost:8080`). Direct browser calls to individual microservice ports (`8081`-`8087`) are strictly avoided.
+- **Frontend Stack**: React 19, TypeScript, Vite, Tailwind CSS v4 (`@tailwindcss/vite`), React Router v7.
+- **Visual Design Preservation**: Strict preservation of Google Stitch layouts, components, typography, color palettes, and glassmorphism styling.
+- **Strong Typing**: Comprehensive TypeScript interfaces (`src/types/api.ts`) for all request/response DTOs across the 7 backend microservices.
+- **Centralized API Client**: Axios HTTP client (`src/services/api/apiClient.ts`) with automated `Authorization: Bearer <JWT>` injection, centralized error extraction, and 401 unauthenticated session revocation.
+- **Auth Context & Route Guards**: Session restoration via `GET /api/auth/me`, protected route wrapper (`ProtectedRoute.tsx`), and role-based access control separating Student and Admin portals.
+- **Zero Mock Data**: Hardcoded student profiles, mock admissions, fake course registrations, static timetable blocks, and mock statistics replaced with real backend microservice APIs.
+
+### Integrated Routes & Endpoints
+
+| Route | View Component | Role | Backend Service & Endpoints |
+|---|---|---|---|
+| `/` | `LandingPage` | Public | — |
+| `/login` | `LoginPage` | Public | Auth Service: `POST /api/auth/login` |
+| `/register` | `RegisterPage` | Public | Auth Service: `POST /api/auth/register`, `POST /api/auth/login` |
+| `/dashboard` | `StudentDashboard` | `STUDENT` | Parallel aggregation: Student, Admission, Registration, Schedule, Notification APIs |
+| `/profile` | `StudentProfile` | `STUDENT` | Student Service: `GET /api/students/profile`, `PUT /api/students/profile` |
+| `/admission/apply` | `AdmissionApplication` | `STUDENT` | Admission Service: `GET /api/admissions/my-application`, `POST /api/admissions/apply`, `POST /api/admissions/{id}/submit`, `POST /api/admissions/{id}/documents` |
+| `/courses` | `ExploreCourses` | `STUDENT` | Course Service: `GET /api/courses` (filters: search, dept, sem); Registration Service: `POST /api/registrations` |
+| `/my-courses` | `MyRegisteredCourses` | `STUDENT` | Registration Service: `GET /api/registrations/my/active`, `DELETE /api/registrations/{id}` |
+| `/timetable` | `WeeklyTimetable` | `STUDENT` | Schedule Service: `GET /api/schedules/my` (dynamic 5-day time grid) |
+| `/notifications` | `StudentNotifications` | `STUDENT` | Notification Service: `GET /api/notifications/my`, `PUT /api/notifications/{id}/read`, `PUT /api/notifications/my/read-all`, `DELETE /api/notifications/{id}` |
+| `/admin/dashboard` | `AdminDashboard` | `ADMIN` | Microservices metric aggregation: Admissions, Courses, Registrations |
+| `/admin/admissions` | `AdminAdmissionReview` | `ADMIN` | Admission Service: `GET /api/admissions`, `GET /api/admissions/{id}/documents`, `PUT /api/admissions/{id}/review` |
+| `/admin/courses` | `AdminCourseManagement` | `ADMIN` | Course Service: `GET /api/courses`, `PUT /api/courses/{id}/activate`, `PUT /api/courses/{id}/deactivate` |
+| `/admin/courses/:courseId`| `AdminCourseEditor` | `ADMIN` | Course Service: `GET /api/courses/{id}`, `POST /api/courses`, `PUT /api/courses/{id}`, `POST/DELETE /api/courses/{id}/prerequisites` |
+| `/admin/schedules` | `AdminScheduleManagement` | `ADMIN` | Schedule Service: `GET /api/schedules`, `POST /api/schedules`, `DELETE /api/schedules/{id}` |
+| `/admin/notifications` | `AdminNotifications` | `ADMIN` | Notification Service: `GET /api/notifications/admin`, `POST /api/notifications`, `POST /api/notifications/broadcast` |
+
+### Environment Configuration
+Copy `.env.example` to `.env` in `frontend/`:
+```env
+VITE_API_BASE_URL=http://localhost:8080
+```
+
+
 
 

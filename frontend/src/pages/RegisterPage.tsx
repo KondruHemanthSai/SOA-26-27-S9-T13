@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { authApi, getErrorMessage } from '../services/api';
 
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState('');
@@ -22,20 +23,37 @@ export default function RegisterPage() {
       return;
     }
 
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
     setLoading(true);
     try {
-      // TODO: Wire to Auth Service in Phase 2
-      const mockUser = {
-        id: '1',
-        email,
-        firstName,
-        lastName,
-        role: 'STUDENT' as const,
-      };
-      login('mock-jwt-token', mockUser);
+      const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
+      await authApi.register({
+        name: fullName,
+        email: email.trim(),
+        password,
+        role: 'STUDENT',
+      });
+
+      // After successful registration, log user in
+      const loginResponse = await authApi.login({
+        email: email.trim(),
+        password,
+      });
+
+      login(loginResponse.token, {
+        id: loginResponse.userId,
+        name: loginResponse.name,
+        email: loginResponse.email,
+        role: loginResponse.role,
+      });
+
       navigate('/dashboard');
-    } catch {
-      setError('Registration failed. Please try again.');
+    } catch (err) {
+      setError(getErrorMessage(err, 'Registration failed. Please check your details and try again.'));
     } finally {
       setLoading(false);
     }
@@ -72,36 +90,69 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="font-label-sm text-label-sm text-on-surface-variant">First Name</label>
-                <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full rounded-lg glass-input px-4 py-3 font-body-md text-body-md text-on-surface" placeholder="John" required />
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="w-full rounded-lg glass-input px-4 py-3 font-body-md text-body-md text-on-surface"
+                  placeholder="John"
+                  required
+                />
               </div>
               <div className="space-y-1">
                 <label className="font-label-sm text-label-sm text-on-surface-variant">Last Name</label>
-                <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)}
-                  className="w-full rounded-lg glass-input px-4 py-3 font-body-md text-body-md text-on-surface" placeholder="Doe" required />
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full rounded-lg glass-input px-4 py-3 font-body-md text-body-md text-on-surface"
+                  placeholder="Doe"
+                  required
+                />
               </div>
             </div>
 
             <div className="space-y-1">
               <label className="font-label-sm text-label-sm text-on-surface-variant">Email Address</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg glass-input px-4 py-3 font-body-md text-body-md text-on-surface" placeholder="you@university.edu" required />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-lg glass-input px-4 py-3 font-body-md text-body-md text-on-surface"
+                placeholder="you@university.edu"
+                required
+              />
             </div>
 
             <div className="space-y-1">
               <label className="font-label-sm text-label-sm text-on-surface-variant">Password</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg glass-input px-4 py-3 font-body-md text-body-md text-on-surface" placeholder="••••••••" required />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-lg glass-input px-4 py-3 font-body-md text-body-md text-on-surface"
+                placeholder="••••••••"
+                required
+              />
             </div>
 
             <div className="space-y-1">
               <label className="font-label-sm text-label-sm text-on-surface-variant">Confirm Password</label>
-              <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full rounded-lg glass-input px-4 py-3 font-body-md text-body-md text-on-surface" placeholder="••••••••" required />
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full rounded-lg glass-input px-4 py-3 font-body-md text-body-md text-on-surface"
+                placeholder="••••••••"
+                required
+              />
             </div>
 
-            <button type="submit" disabled={loading}
-              className="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-lg shadow-sm hover:bg-primary/90 hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-lg shadow-sm hover:bg-primary/90 hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            >
               {loading ? 'Creating account...' : 'Create Account'}
               {!loading && <span className="material-symbols-outlined text-[18px]">arrow_forward</span>}
             </button>

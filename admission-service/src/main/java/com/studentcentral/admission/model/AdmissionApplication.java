@@ -35,6 +35,7 @@ public class AdmissionApplication {
 
     private LocalDate applicationDate;
 
+    @Indexed
     private ApplicationStatus status = ApplicationStatus.DRAFT;
 
     private Instant submissionDate;

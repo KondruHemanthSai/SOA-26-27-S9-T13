@@ -6,7 +6,7 @@ spring:
     name: course-service
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/student_central_course}
+      uri: ${MONGODB_COURSE_URI:${MONGODB_URI:${MONGODB_BASE_URI:mongodb://localhost:27017}/student_central_course${MONGODB_URI_OPTIONS:}}}
 
 eureka:
   client:

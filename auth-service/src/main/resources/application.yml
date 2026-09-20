@@ -6,7 +6,7 @@ spring:
     name: auth-service
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/student_central_auth}
+      uri: ${MONGODB_AUTH_URI:${MONGODB_URI:${MONGODB_BASE_URI:mongodb://localhost:27017}/student_central_auth${MONGODB_URI_OPTIONS:}}}
 
 eureka:
   client:

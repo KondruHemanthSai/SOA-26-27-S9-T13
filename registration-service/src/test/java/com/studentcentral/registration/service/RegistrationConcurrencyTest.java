@@ -6,6 +6,7 @@ import com.studentcentral.registration.client.ScheduleValidationClient;
 import com.studentcentral.registration.client.StudentServiceClient;
 import com.studentcentral.registration.client.dto.CourseAvailabilityDto;
 import com.studentcentral.registration.client.dto.CourseDto;
+import com.studentcentral.registration.client.dto.ScheduleConflictResult;
 import com.studentcentral.registration.client.dto.StudentProfileDto;
 import com.studentcentral.registration.dto.CreateRegistrationRequest;
 import com.studentcentral.registration.dto.RegistrationSuccessResponse;
@@ -85,7 +86,7 @@ class RegistrationConcurrencyTest {
         when(registrationRepository.existsByStudentIdAndCourseIdAndStatus(anyString(), anyString(), any(RegistrationStatus.class))).thenReturn(false);
         when(registrationRepository.existsByStudentIdAndCourseCodeIgnoreCaseAndStatus(anyString(), anyString(), any(RegistrationStatus.class))).thenReturn(false);
         when(registrationRepository.findByStudentIdAndSemesterAndStatus(anyString(), anyInt(), any(RegistrationStatus.class))).thenReturn(List.of());
-        when(scheduleValidationClient.hasScheduleConflict(anyString(), anyString(), anyInt())).thenReturn(false);
+        when(scheduleValidationClient.checkScheduleConflict(anyString(), anyString(), anyInt(), any())).thenReturn(new ScheduleConflictResult(false, null));
 
         // Atomic seat reservation simulator: only the first call returns true; subsequent call returns false
         AtomicInteger availableSeats = new AtomicInteger(1);
