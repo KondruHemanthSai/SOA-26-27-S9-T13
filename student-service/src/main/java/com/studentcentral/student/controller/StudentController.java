@@ -126,6 +126,20 @@ public class StudentController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Admin: Update student admission status.
+     */
+    @PutMapping("/{id}/admission-status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<StudentResponse> updateAdmissionStatus(
+            @PathVariable("id") String id,
+            @RequestParam("status") AdmissionStatus status
+    ) {
+        log.info("Admin updating admission status for student {} to {}", id, status);
+        StudentResponse response = studentService.updateAdmissionStatus(id, status);
+        return ResponseEntity.ok(response);
+    }
+
     private void validateUser(AuthenticatedUser currentUser) {
         if (currentUser == null || currentUser.getUserId() == null) {
             throw new UnauthorizedAccessException("Authentication required");

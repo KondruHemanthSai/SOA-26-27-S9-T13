@@ -1,0 +1,272 @@
+services:
+  eureka-server:
+    build:
+      context: .
+      dockerfile: ./eureka-server/Dockerfile
+    container_name: student-central-eureka
+    ports:
+      - "8761:8761"
+    environment:
+      JAVA_OPTS: "-Xmx384m -Xms128m"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 60s
+    networks:
+      - student-central-net
+    restart: unless-stopped
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./auth-service/Dockerfile
+    container_name: student-central-auth
+    ports:
+      - "8081:8081"
+    env_file:
+      - .env
+    environment:
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      JAVA_OPTS: "-Xmx384m -Xms128m"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+    networks:
+      - student-central-net
+    restart: unless-stopped
+
+  student-service:
+    build:
+      context: .
+      dockerfile: ./student-service/Dockerfile
+    container_name: student-central-student
+    ports:
+      - "8082:8082"
+    env_file:
+      - .env
+    environment:
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      JAVA_OPTS: "-Xmx384m -Xms128m"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+    networks:
+      - student-central-net
+    restart: unless-stopped
+
+  admission-service:
+    build:
+      context: .
+      dockerfile: ./admission-service/Dockerfile
+    container_name: student-central-admission
+    ports:
+      - "8083:8083"
+    env_file:
+      - .env
+    environment:
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      JAVA_OPTS: "-Xmx384m -Xms128m"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+    networks:
+      - student-central-net
+    restart: unless-stopped
+
+  course-service:
+    build:
+      context: .
+      dockerfile: ./course-service/Dockerfile
+    container_name: student-central-course
+    ports:
+      - "8084:8084"
+    env_file:
+      - .env
+    environment:
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      JAVA_OPTS: "-Xmx384m -Xms128m"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+    networks:
+      - student-central-net
+    restart: unless-stopped
+
+  registration-service:
+    build:
+      context: .
+      dockerfile: ./registration-service/Dockerfile
+    container_name: student-central-registration
+    ports:
+      - "8085:8085"
+    env_file:
+      - .env
+    environment:
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      JAVA_OPTS: "-Xmx384m -Xms128m"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+    networks:
+      - student-central-net
+    restart: unless-stopped
+
+  schedule-service:
+    build:
+      context: .
+      dockerfile: ./schedule-service/Dockerfile
+    container_name: student-central-schedule
+    ports:
+      - "8086:8086"
+    env_file:
+      - .env
+    environment:
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      JAVA_OPTS: "-Xmx384m -Xms128m"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+    networks:
+      - student-central-net
+    restart: unless-stopped
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: ./notification-service/Dockerfile
+    container_name: student-central-notification
+    ports:
+      - "8087:8087"
+    env_file:
+      - .env
+    environment:
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      JAVA_OPTS: "-Xmx384m -Xms128m"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8087/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+    networks:
+      - student-central-net
+    restart: unless-stopped
+
+  ai-service:
+    build:
+      context: .
+      dockerfile: ./ai-service/Dockerfile
+    container_name: student-central-ai
+    ports:
+      - "8088:8088"
+    env_file:
+      - .env
+    environment:
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      JAVA_OPTS: "-Xmx384m -Xms128m"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+    networks:
+      - student-central-net
+    restart: unless-stopped
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./api-gateway/Dockerfile
+    container_name: student-central-gateway
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      JAVA_OPTS: "-Xmx384m -Xms128m"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+    networks:
+      - student-central-net
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:8080
+    container_name: student-central-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - student-central-net
+    restart: unless-stopped
+
+networks:
+  student-central-net:
+    driver: bridge

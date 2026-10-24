@@ -34,8 +34,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/courses/health",
-                                "/actuator/**"
+                                "/actuator/**",
+                                "/api/courses/*/reserve-seat",
+                                "/api/courses/*/release-seat"
                         ).permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/courses/**").permitAll()
                         .requestMatchers("/api/courses/**").authenticated()
                         .anyRequest().authenticated()
                 )

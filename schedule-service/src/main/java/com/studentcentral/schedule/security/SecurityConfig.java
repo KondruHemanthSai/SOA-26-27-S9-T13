@@ -34,7 +34,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/schedules/health",
-                                "/actuator/**"
+                                "/actuator/**",
+                                "/api/schedules/check-conflict"
                         ).permitAll()
                         .requestMatchers("/api/schedules/**").authenticated()
                         .anyRequest().authenticated()

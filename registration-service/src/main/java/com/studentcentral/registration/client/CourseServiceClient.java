@@ -125,6 +125,8 @@ public class CourseServiceClient {
 
     private HttpEntity<Void> createAuthEntity(String jwtToken) {
         HttpHeaders headers = new HttpHeaders();
+        headers.set("X-User-Id", "internal-registration-service");
+        headers.set("X-User-Role", "ADMIN");
         if (jwtToken != null && !jwtToken.isBlank()) {
             headers.set(HttpHeaders.AUTHORIZATION, jwtToken.startsWith("Bearer ") ? jwtToken : "Bearer " + jwtToken);
         }

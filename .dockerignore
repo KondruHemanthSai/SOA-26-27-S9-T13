@@ -1,0 +1,12 @@
+**/.git
+**/.gitignore
+**/.env
+**/.env.*
+**/node_modules
+**/dist
+**/target
+**/*.log
+logs/
+stitch_student_central_smart_campus/
+postman/
+docs/

@@ -35,6 +35,8 @@ public class UpdateStudentRequest {
     @Max(value = 12, message = "Semester cannot exceed 12")
     private Integer semester;
 
+    private com.studentcentral.student.model.AdmissionStatus admissionStatus;
+
     public UpdateStudentRequest() {
     }
 
@@ -120,5 +122,13 @@ public class UpdateStudentRequest {
 
     public void setSemester(Integer semester) {
         this.semester = semester;
+    }
+
+    public com.studentcentral.student.model.AdmissionStatus getAdmissionStatus() {
+        return admissionStatus;
+    }
+
+    public void setAdmissionStatus(com.studentcentral.student.model.AdmissionStatus admissionStatus) {
+        this.admissionStatus = admissionStatus;
     }
 }

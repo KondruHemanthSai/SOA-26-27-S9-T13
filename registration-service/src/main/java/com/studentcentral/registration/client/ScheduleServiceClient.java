@@ -34,6 +34,8 @@ public class ScheduleServiceClient implements ScheduleValidationClient {
         log.debug("Sending schedule conflict check request to Schedule Service for student {} and course {}", studentId, courseId);
         try {
             HttpHeaders headers = new HttpHeaders();
+            headers.set("X-User-Id", studentId != null ? studentId : "system");
+            headers.set("X-User-Role", "STUDENT");
             if (jwtToken != null && !jwtToken.isBlank()) {
                 headers.set(HttpHeaders.AUTHORIZATION, jwtToken.startsWith("Bearer ") ? jwtToken : "Bearer " + jwtToken);
             }

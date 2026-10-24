@@ -225,51 +225,90 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                {/* Quick Actions & System Health */}
+                {/* Campus Administration & Quick Actions */}
                 <div className="glass-card rounded-xl p-6 flex flex-col justify-between">
                   <div>
-                    <h3 className="font-headline-md text-headline-md font-semibold text-on-surface mb-2">
-                      Campus Microservices
+                    <h3 className="font-headline-md text-headline-md font-semibold text-on-surface mb-1">
+                      Campus Management
                     </h3>
                     <p className="font-body-sm text-xs text-on-surface-variant mb-4">
-                      Spring Cloud Discovery & Health (via API Gateway :8080)
+                      Academic operations &amp; portal controls
                     </p>
 
-                    <div className="space-y-3">
-                      {[
-                        { name: 'Auth Service', path: '/api/auth/**', port: '8081' },
-                        { name: 'Student Service', path: '/api/students/**', port: '8082' },
-                        { name: 'Admission Service', path: '/api/admissions/**', port: '8083' },
-                        { name: 'Course Service', path: '/api/courses/**', port: '8084' },
-                        { name: 'Registration Service', path: '/api/registrations/**', port: '8085' },
-                        { name: 'Schedule Service', path: '/api/schedules/**', port: '8086' },
-                        { name: 'Notification Service', path: '/api/notifications/**', port: '8087' },
-                      ].map((svc) => (
-                        <div
-                          key={svc.name}
-                          className="flex justify-between items-center p-2 rounded-lg bg-surface-container-low/40"
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                            <span className="font-label-md text-xs">{svc.name}</span>
-                          </div>
-                          <span className="font-label-sm text-[11px] text-on-surface-variant">
-                            {svc.path}
-                          </span>
+                    {/* Quick Action Shortcuts */}
+                    <div className="space-y-2 mb-5">
+                      <Link
+                        to="/admin/courses/new"
+                        className="flex items-center justify-between p-3 rounded-lg bg-surface-container-low hover:bg-primary/10 hover:border-primary/20 border border-transparent transition-all group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="material-symbols-outlined text-primary text-[20px]">add_circle</span>
+                          <span className="font-label-md text-xs font-semibold text-on-surface">Add New Course</span>
                         </div>
-                      ))}
+                        <span className="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:translate-x-0.5 transition-transform">chevron_right</span>
+                      </Link>
+
+                      <Link
+                        to="/admin/schedules"
+                        className="flex items-center justify-between p-3 rounded-lg bg-surface-container-low hover:bg-primary/10 hover:border-primary/20 border border-transparent transition-all group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="material-symbols-outlined text-primary text-[20px]">calendar_month</span>
+                          <span className="font-label-md text-xs font-semibold text-on-surface">Manage Timetable</span>
+                        </div>
+                        <span className="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:translate-x-0.5 transition-transform">chevron_right</span>
+                      </Link>
+
+                      <Link
+                        to="/admin/admissions"
+                        className="flex items-center justify-between p-3 rounded-lg bg-surface-container-low hover:bg-primary/10 hover:border-primary/20 border border-transparent transition-all group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="material-symbols-outlined text-primary text-[20px]">assignment_turned_in</span>
+                          <span className="font-label-md text-xs font-semibold text-on-surface">Review Admissions</span>
+                        </div>
+                        <span className="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:translate-x-0.5 transition-transform">chevron_right</span>
+                      </Link>
+
+                      <Link
+                        to="/admin/notifications"
+                        className="flex items-center justify-between p-3 rounded-lg bg-surface-container-low hover:bg-primary/10 hover:border-primary/20 border border-transparent transition-all group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="material-symbols-outlined text-primary text-[20px]">campaign</span>
+                          <span className="font-label-md text-xs font-semibold text-on-surface">Broadcast Announcement</span>
+                        </div>
+                        <span className="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:translate-x-0.5 transition-transform">chevron_right</span>
+                      </Link>
+                    </div>
+
+                    {/* Department Snapshot */}
+                    <div className="p-3 rounded-lg bg-surface-container/30 border border-outline-variant/15 space-y-2">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-on-surface-variant">Departments</span>
+                        <span className="font-bold text-on-surface">CSE, ECE, IT, AI</span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-on-surface-variant">Academic Session</span>
+                        <span className="font-bold text-primary">Fall Semester 2026</span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-on-surface-variant">Portal Status</span>
+                        <span className="inline-flex items-center gap-1 font-semibold text-emerald-600">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                          Operational
+                        </span>
+                      </div>
                     </div>
                   </div>
 
                   <div className="pt-4 border-t border-outline-variant/20 mt-4">
-                    <a
-                      href="http://localhost:8761"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="w-full py-2 bg-surface-container text-center block rounded-lg font-label-sm text-xs text-primary hover:bg-primary/10 transition-colors"
+                    <Link
+                      to="/admin/courses"
+                      className="w-full py-2.5 bg-primary text-on-primary text-center block rounded-lg font-label-sm text-xs font-semibold hover:opacity-95 transition-opacity shadow-xs"
                     >
-                      Open Eureka Discovery Console ↗
-                    </a>
+                      Browse Full Course Catalog →
+                    </Link>
                   </div>
                 </div>
               </div>

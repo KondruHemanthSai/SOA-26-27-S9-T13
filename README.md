@@ -86,38 +86,27 @@ For detailed setup instructions, see:
 - [MongoDB Atlas Setup Guide](docs/mongodb-setup.md)
 - [Postman API Testing Guide](docs/postman-testing.md)
 
-### 2. Start Eureka Server
-```bash
-cd eureka-server
-mvn spring-boot:run
+### Quick Start (Windows)
+Double-click or run:
+```cmd
+start-all.bat
 ```
-*Access dashboard at: `http://localhost:8761`*
+This automatically verifies dependencies, loads `.env`, starts the Eureka server, all 8 microservices, API Gateway, and Vite frontend.
 
-### 3. Start Business Microservices
-Start each service in a separate terminal (all will connect to their respective MongoDB Atlas database):
-```bash
-cd auth-service && mvn spring-boot:run
-cd student-service && mvn spring-boot:run
-cd admission-service && mvn spring-boot:run
-cd course-service && mvn spring-boot:run
-cd registration-service && mvn spring-boot:run
-cd schedule-service && mvn spring-boot:run
-cd notification-service && mvn spring-boot:run
+To stop all services:
+```cmd
+stop-all.bat
 ```
 
-### 4. Start API Gateway
-```bash
-cd api-gateway
-mvn spring-boot:run
-```
-*All client requests route through: `http://localhost:8080`*
+---
 
-### 5. Start Frontend
-```bash
-cd frontend
-npm run dev
-```
-*Access the React application at: `http://localhost:5173`*
+### Manual Startup
+If you prefer starting services manually in separate terminals:
+1. Eureka Server: `cd eureka-server && mvn spring-boot:run`
+2. Microservices: `cd <service-dir> && mvn spring-boot:run` (auth, student, admission, course, registration, schedule, notification, ai)
+3. API Gateway: `cd api-gateway && mvn spring-boot:run`
+4. Frontend: `cd frontend && npm run dev`
+
 
 ---
 

@@ -96,11 +96,11 @@ export default function StudentAIAssistant() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      <TopNav />
-      <div className="flex-1 flex overflow-hidden">
-        <StudentSidebar />
-        <main className="flex-1 flex flex-col h-[calc(100vh-64px)] overflow-hidden">
+    <div className="flex h-screen bg-slate-50 overflow-hidden">
+      <StudentSidebar />
+      <div className="md:ml-64 flex-1 flex flex-col h-screen overflow-hidden">
+        <TopNav searchPlaceholder="Ask AI about campus..." />
+        <main className="flex-1 flex flex-col overflow-hidden">
           {/* Header */}
           <div className="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">

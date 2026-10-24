@@ -55,8 +55,7 @@ public class StudentService {
         student.setProgram(request.getProgram() != null ? request.getProgram().trim() : null);
         student.setDepartment(request.getDepartment() != null ? request.getDepartment().trim() : null);
         student.setEnrollmentYear(request.getEnrollmentYear());
-        student.setSemester(request.getSemester() != null ? request.getSemester() : 1);
-        student.setAdmissionStatus(AdmissionStatus.PENDING);
+        student.setAdmissionStatus(AdmissionStatus.APPROVED);
 
         if (request.getAcademicRecord() != null) {
             AcademicRecord record = new AcademicRecord(
@@ -121,6 +120,9 @@ public class StudentService {
         }
         if (request.getSemester() != null) {
             student.setSemester(request.getSemester());
+        }
+        if (request.getAdmissionStatus() != null) {
+            student.setAdmissionStatus(request.getAdmissionStatus());
         }
 
         student.setProfileCompleted(calculateProfileCompleted(student));
@@ -225,5 +227,16 @@ public class StudentService {
                 && student.getProgram() != null && !student.getProgram().isBlank()
                 && student.getDepartment() != null && !student.getDepartment().isBlank()
                 && student.getEnrollmentYear() != null;
+    }
+
+    public StudentResponse updateAdmissionStatus(String identifier, AdmissionStatus status) {
+        Student student = studentRepository.findById(identifier)
+                .or(() -> studentRepository.findByStudentId(identifier))
+                .or(() -> studentRepository.findByUserId(identifier))
+                .orElseThrow(() -> new StudentNotFoundException("Student not found with identifier: " + identifier));
+        student.setAdmissionStatus(status != null ? status : AdmissionStatus.APPROVED);
+        student.setUpdatedAt(Instant.now());
+        Student updatedStudent = studentRepository.save(student);
+        return StudentResponse.fromStudent(updatedStudent);
     }
 }
